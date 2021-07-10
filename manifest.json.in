@@ -1,0 +1,15 @@
+{
+    "name": "uwatch.jiho",
+    "description": "Smartwatch Sync App for Ubuntu Touch",
+    "architecture": "@CLICK_ARCH@",
+    "title": "uWatch",
+    "hooks": {
+        "uWatch": {
+            "apparmor": "uWatch.apparmor",
+            "desktop":  "uWatch.desktop"
+        }
+    },
+    "version": "0.1",
+    "maintainer": "Jiho <comiryu@mailbox.org>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}
