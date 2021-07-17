@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-10 19:46+0000\n"
+"POT-Creation-Date: 2021-07-17 15:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,17 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../qml/Components/PageAddDevice.qml:18
+msgid "Could not find any devices."
+msgstr ""
+
 #: ../qml/Components/PageAddDevice.qml:25
 msgid "Add device"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:31 ../qml/Components/PageDevice.qml:36
+#: ../qml/Components/PageSettings.qml:45
+msgid "Sync"
 msgstr ""
 
 #: ../qml/Components/PageAddDevice.qml:64
@@ -29,12 +38,28 @@ msgstr ""
 msgid "uWatch"
 msgstr ""
 
-#: ../qml/Components/PageSettings.qml:14
+#: ../qml/Components/PageDevice.qml:30 ../qml/Components/PageSettings.qml:14
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Components/PageSettings.qml:45
-msgid "Sync"
+#: ../qml/Components/PageDevice.qml:148
+msgid "Firmware: "
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:155
+msgid "MAC: "
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:168
+msgid "Heart rate"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:210
+msgid "Steps"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:252
+msgid "Burnt calories"
 msgstr ""
 
 #: ../qml/Components/PageSettings.qml:61
