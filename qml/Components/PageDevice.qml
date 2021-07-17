@@ -27,13 +27,13 @@ Page {
            actions: [
             Action {
              iconName: "settings"
-             text: "settings"
+             text: i18n.tr("Settings")
 
              onTriggered: pageStack.push(Qt.resolvedUrl("PageSettings.qml"))
             },
             Action {
               iconName: "sync"
-              text: "sync"
+              text: i18n.tr("Sync")
 
               onTriggered: python.call('uwatch.connect_device', [settings.mac], function(connected) {
                 console.log(connected)
@@ -148,14 +148,14 @@ Page {
         Label {
           id: lblFirmware
 
-          text: "Firmware: " + settings.firmwareVersion
+          text: i18n.tr("Firmware") + ": " + settings.firmwareVersion
           textSize: Label.Small
         }
 
         Label {
           id: lblHardware
 
-          text: "MAC: " + settings.mac
+          text: i18n.tr("MAC") + ": " + settings.mac
           textSize: Label.Small
         }
 
@@ -168,7 +168,7 @@ Page {
 
           GraphHeader {
             id: heartRateGraphHeader
-            title: "Heart rate"
+            title: i18n.tr("Heart rate")
             page: "HeartRate"
           }
 
@@ -210,7 +210,7 @@ Page {
 
           GraphHeader {
             id: stepsGraphHeader
-            title: "Steps"
+            title: i18n.tr("Steps")
             page: "Steps"
           }
 
@@ -252,7 +252,7 @@ Page {
 
           GraphHeader {
             id: caloriesGraphHeader
-            title: "Burnt calories"
+            title: i18n.tr("Burnt calories")
             page: "Calories"
           }
 

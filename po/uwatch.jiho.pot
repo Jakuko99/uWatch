@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-17 15:13+0000\n"
+"POT-Creation-Date: 2021-07-17 15:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,23 +42,23 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:148
+#: ../qml/Components/PageDevice.qml:151
 msgid "Firmware"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:155
+#: ../qml/Components/PageDevice.qml:158
 msgid "MAC"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:168
+#: ../qml/Components/PageDevice.qml:171
 msgid "Heart rate"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:210
+#: ../qml/Components/PageDevice.qml:213
 msgid "Steps"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:252
+#: ../qml/Components/PageDevice.qml:255
 msgid "Burnt calories"
 msgstr ""
 
