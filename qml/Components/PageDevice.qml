@@ -27,13 +27,13 @@ Page {
            actions: [
             Action {
              iconName: "settings"
-             text: i18n.tr("Settings")
+             text: "settings"
 
              onTriggered: pageStack.push(Qt.resolvedUrl("PageSettings.qml"))
             },
             Action {
               iconName: "sync"
-              text: i18n.tr("Sync")
+              text: "sync"
 
               onTriggered: python.call('uwatch.connect_device', [settings.mac], function(connected) {
                 console.log(connected)
@@ -67,6 +67,7 @@ Page {
         top: deviceViewHeader.bottom
         left: parent.left
         right: parent.right
+        topMargin: units.gu(2)
       }
 
       height: units.gu(7)
@@ -96,7 +97,7 @@ Page {
       StatsRectangle {
 
         StatsIcon {
-          iconName: "timer" // Will change after I created a new icon
+          iconName: "timer"
         }
 
         StatsLabel {
@@ -107,7 +108,7 @@ Page {
       StatsRectangle {
 
         StatsIcon {
-          iconName: "transfer-progress" // Will change after I created a new icon
+          iconName: "transfer-progress"
         }
 
         StatsLabel {
@@ -133,6 +134,8 @@ Page {
           top: parent.top
           leftMargin: units.gu(2)
           rightMargin: units.gu(2)
+          bottomMargin: units.gu(4)
+          topMargin: units.gu(2)
         }
 
         Label {
@@ -145,14 +148,14 @@ Page {
         Label {
           id: lblFirmware
 
-          text: i18n.tr("Firmware") + ": " + settings.firmwareVersion
+          text: "Firmware: " + settings.firmwareVersion
           textSize: Label.Small
         }
 
         Label {
           id: lblHardware
 
-          text: i18n.tr("MAC") + ": " + settings.mac
+          text: "MAC: " + settings.mac
           textSize: Label.Small
         }
 
@@ -165,7 +168,7 @@ Page {
 
           GraphHeader {
             id: heartRateGraphHeader
-            title: i18n.tr("Heart rate")
+            title: "Heart rate"
             page: "HeartRate"
           }
 
@@ -207,7 +210,7 @@ Page {
 
           GraphHeader {
             id: stepsGraphHeader
-            title: i18n.tr("Steps")
+            title: "Steps"
             page: "Steps"
           }
 
@@ -249,7 +252,7 @@ Page {
 
           GraphHeader {
             id: caloriesGraphHeader
-            title: i18n.tr("Burnt calories")
+            title: "Burnt calories"
             page: "Calories"
           }
 
