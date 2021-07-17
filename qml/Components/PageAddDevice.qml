@@ -15,7 +15,7 @@ Page {
         if(devices.length > 0) {
           devices.forEach((el, i) => listModel.append({deviceName: el[1], deviceMAC: el[0]}));
         } else {
-          scanLabel.text = "Could not find any devices."
+          scanLabel.text = i18n.tr("Could not find any devices.")
         }
       })
     }
@@ -28,7 +28,7 @@ Page {
            actions: [
             Action {
               iconName: "sync"
-              text: "sync"
+              text: i18n.tr("Sync")
 
               onTriggered: scanDevices()
             }
