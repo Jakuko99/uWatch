@@ -96,7 +96,7 @@ Page {
       StatsRectangle {
 
         StatsIcon {
-          iconName: "timer"
+          iconName: "timer" // Will change after I created a new icon
         }
 
         StatsLabel {
@@ -107,7 +107,7 @@ Page {
       StatsRectangle {
 
         StatsIcon {
-          iconName: "transfer-progress"
+          iconName: "transfer-progress" // Will change after I created a new icon
         }
 
         StatsLabel {
