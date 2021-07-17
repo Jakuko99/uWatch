@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-17 15:04+0000\n"
+"POT-Creation-Date: 2021-07-17 15:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,11 +43,11 @@ msgid "Settings"
 msgstr ""
 
 #: ../qml/Components/PageDevice.qml:148
-msgid "Firmware: "
+msgid "Firmware"
 msgstr ""
 
 #: ../qml/Components/PageDevice.qml:155
-msgid "MAC: "
+msgid "MAC"
 msgstr ""
 
 #: ../qml/Components/PageDevice.qml:168

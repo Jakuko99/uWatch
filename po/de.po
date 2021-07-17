@@ -41,12 +41,12 @@ msgid "Settings"
 msgstr "Einstellungen"
 
 #: ../qml/Components/PageDevice.qml:148
-msgid "Firmware: "
+msgid "Firmware"
 msgstr "Firmware"
 
 #: ../qml/Components/PageDevice.qml:155
-msgid "MAC: "
-msgstr "MAC: "
+msgid "MAC"
+msgstr "MAC"
 
 #: ../qml/Components/PageDevice.qml:168
 msgid "Heart rate"

@@ -145,14 +145,14 @@ Page {
         Label {
           id: lblFirmware
 
-          text: i18n.tr("Firmware: ") + settings.firmwareVersion
+          text: i18n.tr("Firmware") + ": " + settings.firmwareVersion
           textSize: Label.Small
         }
 
         Label {
           id: lblHardware
 
-          text: i18n.tr("MAC: ") + settings.mac
+          text: i18n.tr("MAC") + ": " + settings.mac
           textSize: Label.Small
         }
 
