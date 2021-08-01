@@ -14,11 +14,6 @@ Page {
 
     property string json: "{}"
 
-    Component.onCompleted: {
-      console.log(root.devices);
-
-    }
-
     header: BaseHeader{
         id: deviceViewHeader
         title: i18n.tr('uWatch')
