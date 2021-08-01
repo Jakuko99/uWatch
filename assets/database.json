@@ -5,26 +5,24 @@
       "version": "1.0",
       "columns": [
         {
-          "column": {
-            "name": "mac",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "devicename",
-            "type": "TEXT",
-            "primarykey": "false"
-          },
-          "column": {
-            "name": "firmware",
-            "type": "TEXT",
-            "primarykey": "false"
-          },
-          "column": {
-            "name": "firmwareVersion",
-            "type": "TEXT",
-            "primarykey": "false"
-          }
+          "name": "mac",
+          "type": "TEXT",
+          "primarykey": "true"
+        },
+        {
+          "name": "devicename",
+          "type": "TEXT",
+          "primarykey": "false"
+        },
+        {
+          "name": "firmware",
+          "type": "TEXT",
+          "primarykey": "false"
+        },
+        {
+          "name": "firmwareVersion",
+          "type": "TEXT",
+          "primarykey": "false"
         }
       ]
     },
@@ -33,67 +31,59 @@
       "version": "1.0",
       "columns": [
         {
-          "column": {
-            "name": "date",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "mac",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "steps",
-            "type": "INTEGER",
-            "primarykey": "false"
-          }
+          "name": "date",
+          "type": "TEXT",
+          "primarykey": "true"
+        },
+        {
+          "name": "mac",
+          "type": "TEXT",
+          "primarykey": "true"
+        },
+        {
+          "name": "steps",
+          "type": "INTEGER",
+          "primarykey": "false"
         }
       ]
     },
     {
       "name": "heartrate",
       "version": "1.0",
-      "colums": [
+      "columns": [
         {
-          "column": {
-            "name": "date",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "mac",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "heartrate",
-            "type": "INTEGER",
-            "primarykey": "false"
-          }
+          "name": "date",
+          "type": "TEXT",
+          "primarykey": "true"
+        },
+        {
+          "name": "mac",
+          "type": "TEXT",
+          "primarykey": "true"
+        },
+        {
+          "name": "heartrate",
+          "type": "INTEGER",
+          "primarykey": "false"
         }
       ]
     },
     {
       "name": "calories",
       "version": "1.0",
-      "colums": [
+      "columns": [
         {
-          "column": {
-            "name": "date",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "mac",
-            "type": "TEXT",
-            "primarykey": "true"
-          },
-          "column": {
-            "name": "calories",
-            "type": "INTEGER",
-            "primarykey": "false"
-          }
+          "name": "date",
+          "type": "TEXT",
+          "primarykey": "true"
+        },{
+          "name": "mac",
+          "type": "TEXT",
+          "primarykey": "true"
+        },{
+          "name": "calories",
+          "type": "INTEGER",
+          "primarykey": "false"
         }
       ]
     }
