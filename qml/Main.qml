@@ -4,6 +4,7 @@ import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import Qt.labs.platform 1.0
 import "Components"
 
 MainView {
@@ -16,24 +17,28 @@ MainView {
     height: units.gu(75)
 
     property string devices: "{}"
+    property string databaseStruct: "{}"
 
     property string accentColor: "#c74375"
 
-    function readTextFile(fileUrl){
+    function readTextFile(fileUrl, callback){
        var xhr = new XMLHttpRequest;
+       var result = "";
        xhr.open("GET", fileUrl); // set Method and File
+       xhr.send(); // begin the request
+
        xhr.onreadystatechange = function () {
            if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
                var response = xhr.responseText;
 
-               root.devices = response
+               if(callback) callback(response);
            }
        }
-       xhr.send(); // begin the request
     }
 
     Settings {
         id: settings
+        property bool firstRun: true
         property bool pairedDevice: false
         property string pairedDeviceName: "None"
         property string mac: "None"
@@ -51,11 +56,8 @@ MainView {
     PageStack {
       id: pageStack
       Component.onCompleted: {
-        readTextFile(Qt.resolvedUrl("../assets/devices.json"))
-
         if(settings.pairedDevice == true)
         {
-          console.log("Settings device view");
           pageStack.push(Qt.resolvedUrl("./Components/PageDevice.qml"))
         } else {
           pageStack.push(Qt.resolvedUrl("./Components/PageWelcome.qml"))
@@ -66,19 +68,12 @@ MainView {
     Python {
         id: python
 
-        property bool initialized: false
-
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../src/'));
             addImportPath(Qt.resolvedUrl('../src/uGatt'));
 
             importModule('uwatch', function() {
-                console.log('module imported');
-
                 python.call('uwatch.initialize', function(initialized) {
-                  python.initialized = initialized;
-
-                  console.log("Backend initialized: " + initialized);
                 });
             });
         }
@@ -86,5 +81,27 @@ MainView {
         onError: {
             console.log('python error: ' + traceback);
         }
+    }
+
+    Component.onCompleted: {
+
+      readTextFile(Qt.resolvedUrl("../assets/devices.json"), function(result) {
+        root.devices = result
+      });
+
+      if(settings.firstRun == true) {
+        var appDataPath = StandardPaths.writableLocation(StandardPaths.AppDataLocation)
+        var dbCreated = false
+
+        readTextFile(Qt.resolvedUrl("../assets/database.json"), function(result) {
+          python.call('uwatch.initialSetup', [appDataPath.toString(), result], function(state) {
+            dbCreated = state
+          });
+        });
+
+        if(dbCreated == true) {
+          settings.firstRun = false
+        }
+      }
     }
 }
