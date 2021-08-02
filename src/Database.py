@@ -29,9 +29,10 @@ def open(appDataPath):
 
 
 def execute(query):
-    print("Executing query: " + query)
-
     cursor.execute(query)
+
+
+def apply():
     connection.commit()
 
 
