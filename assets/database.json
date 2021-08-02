@@ -3,87 +3,103 @@
     {
       "name": "watches",
       "version": "1.0",
+      "primarykey": [
+        {
+          "name": "mac"
+        }
+      ],
       "columns": [
         {
           "name": "mac",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },
         {
           "name": "devicename",
-          "type": "TEXT",
-          "primarykey": "false"
+          "type": "TEXT"
         },
         {
           "name": "firmware",
-          "type": "TEXT",
-          "primarykey": "false"
+          "type": "TEXT"
         },
         {
           "name": "firmwareVersion",
-          "type": "TEXT",
-          "primarykey": "false"
+          "type": "TEXT"
         }
       ]
     },
     {
       "name": "steps",
       "version": "1.0",
+      "primarykey": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "mac"
+        }
+      ],
       "columns": [
         {
           "name": "date",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },
         {
           "name": "mac",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },
         {
           "name": "steps",
-          "type": "INTEGER",
-          "primarykey": "false"
+          "type": "INTEGER"
         }
       ]
     },
     {
       "name": "heartrate",
       "version": "1.0",
+      "primarykey": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "mac"
+        }
+      ],
       "columns": [
         {
           "name": "date",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },
         {
           "name": "mac",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },
         {
           "name": "heartrate",
-          "type": "INTEGER",
-          "primarykey": "false"
+          "type": "INTEGER"
         }
       ]
     },
     {
       "name": "calories",
       "version": "1.0",
+      "primarykey": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "mac"
+        }
+      ],
       "columns": [
         {
           "name": "date",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },{
           "name": "mac",
-          "type": "TEXT",
-          "primarykey": "true"
+          "type": "TEXT"
         },{
           "name": "calories",
-          "type": "INTEGER",
-          "primarykey": "false"
+          "type": "INTEGER"
         }
       ]
     }

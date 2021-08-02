@@ -10,9 +10,12 @@ import Database as db
 def createDatabase(appDataPath, node):
     if db.open(appDataPath):
         tables = getDatabaseTableNameFromJSON(node)
+
         for table in tables:
             db.execute(createTableQuery(
-                table["name"], getTableColumns(json.dumps(table))))
+                table["name"], getTableColumns(json.dumps(table)), getTablePrimaryKeys(json.dumps(table))))
+
+        db.apply()
 
 
 def getDatabaseTableNameFromJSON(root):
@@ -23,17 +26,22 @@ def getTableColumns(root):
     return json.loads(root)["columns"]
 
 
-def createTableQuery(name, columns):
-    query = "CREATE TABLE " + name + " ("
+def getTablePrimaryKeys(root):
+    return json.loads(root)["primarykey"]
+
+
+def createTableQuery(tableName, columns, primarykey):
+    query = "CREATE TABLE " + tableName + " ("
 
     for column in columns:
-        line = column["name"] + " " + column["type"]
-        if column["primarykey"] == "true":
-            line += " PRIMARY KEY"
+        query += column["name"] + " " + column["type"] + ", "
 
-        line += ", "
-        query += line
+    query += "PRIMARY KEY ("
+
+    for key in primarykey:
+        query += key["name"] + ", "
 
     query = query[0:len(query)-2]
-    query += ");"
+    query += "));"
+    print(query)
     return query
