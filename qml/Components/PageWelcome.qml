@@ -4,15 +4,19 @@ import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import Qt.labs.platform 1.0
 
 Page {
     id: welcomeView
     anchors.fill: parent
 
-    function listDevices() {
-      python.call('uwatch.databaseExists', [root.appDataPath.toString()], function(result) {
+    function listDevices(appDataPath) {
+      console.log("AppDataPath:", appDataPath.toString());
+      python.call('uwatch.databaseExists', [appDataPath.toString()], function(result) {
+        console.log("Database exists:", result);
         if(result == true) {
-          python.call('uwatch.getDevices', [root.appDataPath.toString()], function(devices) {
+          python.call('uwatch.getDevices', [appDataPath.toString()], function(devices) {
+            console.log(devices);
             devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
           });
         }
@@ -108,5 +112,5 @@ Page {
         }
       }
 
-    Component.onCompleted: listDevices()
+    Component.onCompleted: listDevices(StandardPaths.writableLocation(StandardPaths.AppDataLocation))
 }
