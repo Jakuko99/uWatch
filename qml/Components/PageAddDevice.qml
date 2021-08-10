@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 //import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
@@ -7,13 +8,17 @@ import io.thp.pyotherside 1.3
 
 Page {
     id: addDeviceView
+
+    property string selectedFirmware: ""
+    property string selectedMAC: ""
+
     anchors.fill: parent
 
     function scanDevices() {
       listModel.clear()
       python.call('uwatch.add_device', [root.devices], function(devices) {
         if(devices.length > 0) {
-          devices.forEach((el, i) => listModel.append({deviceName: el[1], deviceMAC: el[0]}));
+          devices.forEach((el, i) => listModel.append({firmware: el[1], deviceMAC: el[0]}));
         } else {
           scanLabel.text = i18n.tr("Could not find any devices.")
         }
@@ -73,20 +78,100 @@ Page {
         ListItem {
             id: deviceItemDelegate
 
-            onClicked:{
-                settings.firmware = deviceName
-                settings.mac = deviceMAC
-                settings.pairedDevice = true
-                pageStack.pop()
-                pageStack.pop()
-                pageStack.push(Qt.resolvedUrl("PageDevice.qml"))
+            onClicked: {
+              selectedFirmware = firmware
+              selectedMAC = deviceMAC
+              PopupUtils.open(pairDialogComponent)
             }
 
             ListItemLayout {
                 anchors.centerIn: parent
-                title.text: deviceName
+                title.text: firmware
                 subtitle.text: deviceMAC
             }
         }
+    }
+
+    Component {
+      id: pairDialogComponent
+
+      Dialog {
+           id: pairDialog
+           title: i18n.tr("Pair") + " " + addDeviceView.selectedFirmware
+           text: i18n.tr("Are you sure you want to pair with") + " " + addDeviceView.selectedMAC + "?"
+           Button {
+               text: "Cancel"
+               onClicked: PopupUtils.close(pairDialog)
+           }
+           Button {
+               text: "Pair"
+               color: "#3EB34F"
+
+               onClicked: {
+                 PopupUtils.close(pairDialog)
+                 PopupUtils.open(attemptPairDialogComponent)
+               }
+           }
+       }
+    }
+
+    Component {
+      id: attemptPairDialogComponent
+      Dialog {
+        id: attemptPairDialog
+        title: i18n.tr("Pair device")
+        text: i18n.tr("Attempting to pair with") + " " + addDeviceView.selectedMAC
+
+        Component.onCompleted: {
+          python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
+            PopupUtils.close(attemptPairDialog)
+            if(result) {
+              python.call('uwatch.addDevice', [addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""], function(result) {
+                welcomeListModel.append({firmware: addDeviceView.selectedFirmware, deviceMAC: addDeviceView.selectedMAC})
+              })
+              PopupUtils.open(pairSuccessfulDialogComponent)
+            } else {
+              PopupUtils.open(pairUnsuccessfulDialogComponent)
+            }
+          })
+        }
       }
+    }
+
+    Component {
+      id: pairSuccessfulDialogComponent
+      Dialog {
+        id: pairSuccessfulDialog
+        title: i18n.tr("Pair successful")
+        text: i18n.tr("Device was successfully paired.")
+
+        Button {
+            text: "Close"
+            color: "#3EB34F"
+
+            onClicked: {
+              PopupUtils.close(pairSuccessfulDialog)
+              pageStack.pop()
+            }
+        }
+      }
+    }
+
+    Component {
+      id: pairUnsuccessfulDialogComponent
+      Dialog {
+        id: pairUnsuccessfulDialog
+        title: i18n.tr("Pair unsuccessful")
+        text: i18n.tr("Device could not be paired.")
+
+        Button {
+            text: "Close"
+            color: "#F7F7F7"
+
+            onClicked: {
+              PopupUtils.close(pairUnsuccessfulDialog)
+            }
+        }
+      }
+    }
 }

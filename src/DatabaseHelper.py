@@ -1,18 +1,78 @@
 import JSONHelper
 import json
 import Database as db
+import sys
 
-#################
-# Initial setup #
-#################
+########
+# Main #
+########
+
+
+def exists(appDataPath):
+    if db.exists(appDataPath):
+        return True
+    else:
+        return False
+
+
+def openDatabase(appDataPath):
+    try:
+        db.open(appDataPath)
+        return True
+    except Exception as e:
+        return False
+
+
+def isOpen():
+    if db.connection is not None:
+        return True
+    else:
+        return False
+
+
+def getValues(tableName, columns, joins, conditions):
+    if isOpen():
+        cursor = db.connection.cursor()
+        cursor.execute(db.createSelectQuery(
+            tableName, columns, joins, conditions, ""))
+
+        return cursor.fetchall()
+
+
+def getLastValue(tableName, columns, joins, conditions, orderBy):
+    if isOpen():
+        cursor = db.connection.cursor()
+        cursor.execute(db.createSelectQuery(tableName, columns,
+                                            joins, conditions, orderBy))
+
+        return cursor.fetchone()
+
+
+def insertValues(tableName, columns, values):
+
+    if isOpen():
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute(db.createInsertQuery(tableName, columns, values))
+            db.apply()
+            return True
+        except Exception as e:
+            print("Error:", e)
+            return False
+    return False
+
+########################################
+# Initial setup to create the database #
+########################################
 
 
 def createDatabase(appDataPath, node):
-    if db.open(appDataPath):
+    if openDatabase(appDataPath):
         tables = getDatabaseTableNameFromJSON(node)
 
         for table in tables:
-            db.execute(createTableQuery(
+            cursor = db.connection.cursor()
+            cursor.execute(db.createTableQuery(
                 table["name"], getTableColumns(json.dumps(table)), getTablePrimaryKeys(json.dumps(table))))
 
         db.apply()
@@ -28,20 +88,3 @@ def getTableColumns(root):
 
 def getTablePrimaryKeys(root):
     return json.loads(root)["primarykey"]
-
-
-def createTableQuery(tableName, columns, primarykey):
-    query = "CREATE TABLE " + tableName + " ("
-
-    for column in columns:
-        query += column["name"] + " " + column["type"] + ", "
-
-    query += "PRIMARY KEY ("
-
-    for key in primarykey:
-        query += key["name"] + ", "
-
-    query = query[0:len(query)-2]
-    query += "));"
-    print(query)
-    return query

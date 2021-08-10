@@ -13,6 +13,47 @@ Page {
     anchors.fill: parent
 
     property string json: "{}"
+    property string deviceMAC: ""
+    property string firmware: ""
+    property string firmwareVersion: ""
+
+    function syncData() {
+      python.call('uwatch.syncTime', [root.devices, settings.firmware], function() {})
+      python.call('uwatch.syncFirmware', [root.devices, settings.firmware], function(firmware) {
+
+      })
+      python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, settings.firmware], function(batteryLevel) {
+
+      })
+
+      python.call('uwatch.syncHeartRate', [root.devices, settings.firmware], function(heartRateLevel) {
+
+      })
+
+      /*python.call('uwatch.syncSteps', [root.devices, settings.firmware], function(stepsLevel) {
+
+      })*/
+
+      updateView();
+    }
+
+    function updateView() {
+      python.call('uwatch.getFirmware', [deviceMAC], function(result) {
+        deviceView.firmware = result[0]
+      })
+
+      python.call('uwatch.getFirmwareVersion', [deviceMAC], function(result) {
+        deviceView.firmwareVersion = result[0]
+      })
+
+      python.call('uwatch.getLatestBatteryLevel', [deviceMAC], function(result) {
+        batteryLevelLabel.labelText = result[0] + " %"
+      })
+
+      python.call('uwatch.getShortISODate', function(result) {
+        console.log("Date:", result);
+      })
+    }
 
     header: BaseHeader{
         id: deviceViewHeader
@@ -30,26 +71,22 @@ Page {
               iconName: "sync"
               text: i18n.tr("Sync")
 
-              onTriggered: python.call('uwatch.connect_device', [settings.mac], function(connected) {
-                console.log(connected)
-                if(connected) {
-                    python.call('uwatch.syncTime', [root.devices, settings.firmware], function() {})
-                    python.call('uwatch.syncFirmware', [root.devices, settings.firmware], function(firmware) {
-                      settings.firmwareVersion = firmware
+              onTriggered: {
+                python.call('uwatch.getConnectionState', [deviceMAC], function(result) {
+                  if(result) {
+                    console.log("Device is already connected.");
+                    syncData()
+                  } else {
+                    console.log("Device is not yet connected, attempting to connect.");
+                    python.call('uwatch.connectDevice', [deviceMAC], function(connected) {
+                      console.log(connected)
+                      if(connected) {
+                          syncData()
+                      }
                     })
-                    python.call('uwatch.syncBatteryLevel', [root.devices, settings.firmware], function(batteryLevel) {
-                      settings.batteryLevel = batteryLevel
-                    })
-
-                    python.call('uwatch.syncHeartRate', [root.devices, settings.firmware], function(heartRateLevel) {
-                      settings.heartRateLevel = heartRateLevel
-                    })
-
-                    python.call('uwatch.syncSteps', [root.devices, settings.firmware], function(stepsLevel) {
-                      settings.stepsLevel = stepsLevel
-                    })
-                }
-              })
+                  }
+                })
+              }
             }
           ]
         }
@@ -74,7 +111,8 @@ Page {
         }
 
         StatsLabel {
-          labelText: settings.batteryLevel + " %"
+          id: batteryLevelLabel
+          labelText: "0 %"
         }
       }
 
@@ -89,7 +127,7 @@ Page {
         }
       }
 
-      StatsRectangle {
+      /*StatsRectangle {
 
         StatsIcon {
           iconName: "timer"
@@ -98,9 +136,9 @@ Page {
         StatsLabel {
           labelText: settings.calorieLevel
         }
-      }
+      }*/
 
-      StatsRectangle {
+      /*StatsRectangle {
 
         StatsIcon {
           iconName: "transfer-progress"
@@ -109,7 +147,7 @@ Page {
         StatsLabel {
           labelText: settings.calorieLevel
         }
-      }
+      }*/
     }
 
     ScrollView {
@@ -136,21 +174,21 @@ Page {
         Label {
           id: lblDeviceName
 
-          text: "InfiniTime" // Will be changed as soon as databases are implemented
+          text: firmware // Will be changed as soon as databases are implemented
           textSize: Label.Large
         }
 
         Label {
           id: lblFirmware
 
-          text: i18n.tr("Firmware") + ": " + settings.firmwareVersion
+          text: i18n.tr("Firmware") + ": " + firmwareVersion
           textSize: Label.Small
         }
 
         Label {
           id: lblHardware
 
-          text: i18n.tr("MAC") + ": " + settings.mac
+          text: i18n.tr("MAC") + ": " + deviceMAC
           textSize: Label.Small
         }
 
@@ -180,10 +218,12 @@ Page {
 
             anchors.left: heartRateyAchsis.right
 
-            values: ["04.07.", "05.07.", "06.07.", "07.07.", "08.07.", "09.07.", "10.07."] // Dummy values until database exists
+            values: getShortDateArray() // Dummy values until database exists
           }
 
           GraphValuesRectangle {
+            it: heartRateValues
+
             anchors {
               left: heartRateyAchsis.right
               right: parent.right
@@ -192,12 +232,11 @@ Page {
             }
 
             max: parent.max
-
-            values: ["53", "78", "96", "50", "67", "62", "80"] // Dummy values until database exists
           }
         }
 
-        Graph {
+        // Display only after getting steps to sync
+        /*Graph {
           id: stepsGraph
           width: deviceView.width - units.gu(4)
 
@@ -237,9 +276,10 @@ Page {
 
             values: ["2500", "1200", "8000", "6921", "3267", "9813", "10000"] // Dummy values until database exists
           }
-        }
+        }*/
 
-        Graph {
+        // Display only after getting steps to sync
+        /*Graph {
           id: caloriesGraph
           width: deviceView.width - units.gu(4)
 
@@ -279,7 +319,9 @@ Page {
 
             values: ["1800", "2200", "2000", "3100", "1700", "1600", "1800"] // Dummy values until database exists
           }
-        }
+        }*/
     }
   }
+
+  Component.onCompleted: updateView()
 }
