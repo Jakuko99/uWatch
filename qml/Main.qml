@@ -47,7 +47,6 @@ MainView {
 
         // Some stuff I want to display to not make the App look empty at least until I implemented databases
         property string firmwareVersion: ""
-        property int batteryLevel: 0
         property int heartRateLevel: 0
         property int stepsLevel: 0
         property int calorieLevel: 0
@@ -55,14 +54,7 @@ MainView {
 
     PageStack {
       id: pageStack
-      Component.onCompleted: {
-        if(settings.pairedDevice == true)
-        {
-          pageStack.push(Qt.resolvedUrl("./Components/PageDevice.qml"))
-        } else {
-          pageStack.push(Qt.resolvedUrl("./Components/PageWelcome.qml"))
-        }
-      }
+      Component.onCompleted: pageStack.push(Qt.resolvedUrl("./Components/PageWelcome.qml"))
     }
 
     Python {
@@ -89,19 +81,12 @@ MainView {
         root.devices = result
       });
 
-      if(settings.firstRun == true) {
-        var appDataPath = StandardPaths.writableLocation(StandardPaths.AppDataLocation)
-        var dbCreated = false
+      var appDataPath = StandardPaths.writableLocation(StandardPaths.AppDataLocation)
 
-        readTextFile(Qt.resolvedUrl("../assets/database.json"), function(result) {
-          python.call('uwatch.initialSetup', [appDataPath.toString(), result], function(state) {
-            dbCreated = state
-          });
+      readTextFile(Qt.resolvedUrl("../assets/database.json"), function(result) {
+        python.call('uwatch.initialSetup', [appDataPath.toString(), result], function(state) {
+
         });
-
-        if(dbCreated == true) {
-          settings.firstRun = false
-        }
-      }
+      });
     }
 }
