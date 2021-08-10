@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-17 15:32+0000\n"
+"POT-Creation-Date: 2021-08-10 11:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,48 +17,80 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/PageAddDevice.qml:18
+#: ../qml/Components/PageAddDevice.qml:23
 msgid "Could not find any devices."
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:25
+#: ../qml/Components/PageAddDevice.qml:30
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:31 ../qml/Components/PageDevice.qml:36
+#: ../qml/Components/PageAddDevice.qml:36 ../qml/Components/PageDevice.qml:72
 #: ../qml/Components/PageSettings.qml:45
 msgid "Sync"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:64
+#: ../qml/Components/PageAddDevice.qml:69
 msgid "Scanning for devices"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:24 uWatch.desktop.in.h:1
+#: ../qml/Components/PageAddDevice.qml:100
+msgid "Pair"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:101
+msgid "Are you sure you want to pair with"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:122
+msgid "Pair device"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:123
+msgid "Attempting to pair with"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:145
+msgid "Pair successful"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:146
+msgid "Device was successfully paired."
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:164
+msgid "Pair unsuccessful"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:165
+msgid "Device could not be paired."
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:60 uWatch.desktop.in.h:1
 msgid "uWatch"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:30 ../qml/Components/PageSettings.qml:14
+#: ../qml/Components/PageDevice.qml:66 ../qml/Components/PageSettings.qml:14
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:151
+#: ../qml/Components/PageDevice.qml:184
 msgid "Firmware"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:158
+#: ../qml/Components/PageDevice.qml:191
 msgid "MAC"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:171
+#: ../qml/Components/PageDevice.qml:204
 msgid "Heart rate"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:213
+#: ../qml/Components/PageDevice.qml:246
 msgid "Steps"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:255
+#: ../qml/Components/PageDevice.qml:288
 msgid "Burnt calories"
 msgstr ""
 
@@ -66,14 +98,14 @@ msgstr ""
 msgid "Sync watch after it connected"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:14
+#: ../qml/Components/PageWelcome.qml:24
 msgid "Start"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:37
+#: ../qml/Components/PageWelcome.qml:67
 msgid "No watches yet!"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:46
+#: ../qml/Components/PageWelcome.qml:79
 msgid "To start, just click on '+' in the top bar"
 msgstr ""
