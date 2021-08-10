@@ -28,6 +28,32 @@
       ]
     },
     {
+      "name": "battery",
+      "version": "1.0",
+      "primarykey": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "mac"
+        }
+      ],
+      "columns": [
+        {
+          "name": "date",
+          "type": "TEXT"
+        },
+        {
+          "name": "mac",
+          "type": "TEXT"
+        },
+        {
+          "name": "batteryLevel",
+          "type": "INTEGER"
+        }
+      ]
+    },
+    {
       "name": "steps",
       "version": "1.0",
       "primarykey": [
