@@ -49,10 +49,6 @@ Page {
       python.call('uwatch.getLatestBatteryLevel', [deviceMAC], function(result) {
         batteryLevelLabel.labelText = result[0] + " %"
       })
-
-      python.call('uwatch.getShortISODate', function(result) {
-        console.log("Date:", result);
-      })
     }
 
     header: BaseHeader{
@@ -222,7 +218,7 @@ Page {
           }
 
           GraphValuesRectangle {
-            it: heartRateValues
+            id: heartRateValues
 
             anchors {
               left: heartRateyAchsis.right
