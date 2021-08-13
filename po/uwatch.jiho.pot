@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-10 11:24+0000\n"
+"POT-Creation-Date: 2021-08-12 22:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:36 ../qml/Components/PageDevice.qml:72
+#: ../qml/Components/PageAddDevice.qml:36 ../qml/Components/PageDevice.qml:40
 #: ../qml/Components/PageSettings.qml:45
 msgid "Sync"
 msgstr ""
@@ -42,70 +42,111 @@ msgstr ""
 msgid "Are you sure you want to pair with"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:122
+#: ../qml/Components/PageAddDevice.qml:124
 msgid "Pair device"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:123
+#: ../qml/Components/PageAddDevice.qml:125
 msgid "Attempting to pair with"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:145
+#: ../qml/Components/PageAddDevice.qml:147
 msgid "Pair successful"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:146
+#: ../qml/Components/PageAddDevice.qml:148
 msgid "Device was successfully paired."
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:164
+#: ../qml/Components/PageAddDevice.qml:167
 msgid "Pair unsuccessful"
 msgstr ""
 
-#: ../qml/Components/PageAddDevice.qml:165
+#: ../qml/Components/PageAddDevice.qml:168
 msgid "Device could not be paired."
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:60 uWatch.desktop.in.h:1
+#: ../qml/Components/PageAddValue.qml:14
+#: ../qml/Components/PageStatDetails.qml:106
+msgid "Add value"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:55
+msgid "Date"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:80
+msgid "Time"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:126
+msgid "Add"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:136
+msgid "Cancel"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:28 uWatch.desktop.in.h:1
 msgid "uWatch"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:66 ../qml/Components/PageSettings.qml:14
+#: ../qml/Components/PageDevice.qml:34 ../qml/Components/PageSettings.qml:14
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:184
+#: ../qml/Components/PageDevice.qml:152
 msgid "Firmware"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:191
+#: ../qml/Components/PageDevice.qml:159
 msgid "MAC"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:204
-msgid "Heart rate"
+#: ../qml/Components/PageDevice.qml:172
+msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Components/PageDevice.qml:246
+#: ../qml/Components/PageDevice.qml:217
 msgid "Steps"
-msgstr ""
-
-#: ../qml/Components/PageDevice.qml:288
-msgid "Burnt calories"
 msgstr ""
 
 #: ../qml/Components/PageSettings.qml:61
 msgid "Sync watch after it connected"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:24
+#: ../qml/Components/PageStatDetails.qml:54
+msgid "No stats to display!"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:66
+msgid "Try to add some by swiping up from the bottom edge"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:116
+msgid "Delete entry"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:117
+msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:22
 msgid "Start"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:67
+#: ../qml/Components/PageWelcome.qml:65
 msgid "No watches yet!"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:79
+#: ../qml/Components/PageWelcome.qml:77
 msgid "To start, just click on '+' in the top bar"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:118
+msgid "Delete device"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:119
+msgid "Are you sure you want to delete this device?"
 msgstr ""
