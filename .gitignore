@@ -1,3 +1,4 @@
 build
 .clickable
 .mypy_cache
+.fuse_hidden*
