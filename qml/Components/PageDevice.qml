@@ -12,44 +12,16 @@ Page {
     id: deviceView
     anchors.fill: parent
 
+    // Device specific variables
     property string json: "{}"
     property string deviceMAC: ""
     property string firmware: ""
     property string firmwareVersion: ""
 
-    function syncData() {
-      python.call('uwatch.syncTime', [root.devices, settings.firmware], function() {})
-      python.call('uwatch.syncFirmware', [root.devices, settings.firmware], function(firmware) {
-
-      })
-      python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, settings.firmware], function(batteryLevel) {
-
-      })
-
-      python.call('uwatch.syncHeartRate', [root.devices, settings.firmware], function(heartRateLevel) {
-
-      })
-
-      /*python.call('uwatch.syncSteps', [root.devices, settings.firmware], function(stepsLevel) {
-
-      })*/
-
-      updateView();
-    }
-
-    function updateView() {
-      python.call('uwatch.getFirmware', [deviceMAC], function(result) {
-        deviceView.firmware = result[0]
-      })
-
-      python.call('uwatch.getFirmwareVersion', [deviceMAC], function(result) {
-        deviceView.firmwareVersion = result[0]
-      })
-
-      python.call('uwatch.getLatestBatteryLevel', [deviceMAC], function(result) {
-        batteryLevelLabel.labelText = result[0] + " %"
-      })
-    }
+    // Graph stats
+    property var dateArray: []
+    property var heartRateVals: []
+    property var stepsVals: []
 
     header: BaseHeader{
         id: deviceViewHeader
@@ -69,13 +41,11 @@ Page {
 
               onTriggered: {
                 python.call('uwatch.getConnectionState', [deviceMAC], function(result) {
+                  console.log(result);
                   if(result) {
-                    console.log("Device is already connected.");
                     syncData()
                   } else {
-                    console.log("Device is not yet connected, attempting to connect.");
                     python.call('uwatch.connectDevice', [deviceMAC], function(connected) {
-                      console.log(connected)
                       if(connected) {
                           syncData()
                       }
@@ -119,6 +89,7 @@ Page {
         }
 
         StatsLabel {
+          id: heartRateLabel
           labelText: settings.heartRateLevel
         }
       }
@@ -134,16 +105,17 @@ Page {
         }
       }*/
 
-      /*StatsRectangle {
+      StatsRectangle {
 
         StatsIcon {
           iconName: "transfer-progress"
         }
 
         StatsLabel {
-          labelText: settings.calorieLevel
+          id: stepsLabel
+          labelText: "0"
         }
-      }*/
+      }
     }
 
     ScrollView {
@@ -189,16 +161,16 @@ Page {
         }
 
         Graph {
-          id: heartrateGraph
+          id: heartRateGraph
 
           width: deviceView.width - units.gu(4)
 
-          property int max: 100 // Dummy values until database exists
+          property int max: heartRateVals.length > 0 ? Math.max.apply(Math, heartRateVals) : 200
 
           GraphHeader {
             id: heartRateGraphHeader
-            title: i18n.tr("Heart rate")
-            page: "HeartRate"
+            title: i18n.tr("Heart rate (Highest)")
+            page: "Heart rate"
           }
 
           YAchsis {
@@ -214,7 +186,7 @@ Page {
 
             anchors.left: heartRateyAchsis.right
 
-            values: getShortDateArray() // Dummy values until database exists
+            values: dateArray
           }
 
           GraphValuesRectangle {
@@ -228,15 +200,17 @@ Page {
             }
 
             max: parent.max
+
+            values: heartRateVals
           }
         }
 
-        // Display only after getting steps to sync
-        /*Graph {
+        // Display steps graph as steps can be manually added
+        Graph {
           id: stepsGraph
           width: deviceView.width - units.gu(4)
 
-          property int max: 12000 // Dummy values until database exists
+          property int max: stepsVals.length > 0 ? Math.max.apply(Math, stepsVals) : 12000
 
           GraphHeader {
             id: stepsGraphHeader
@@ -257,7 +231,7 @@ Page {
 
             anchors.left: stepsyAchsis.right
 
-            values: ["04.07.", "05.07.", "06.07.", "07.07.", "08.07.", "09.07.", "10.07."] // Dummy values until database exists
+            values: dateArray
           }
 
           GraphValuesRectangle {
@@ -270,9 +244,9 @@ Page {
 
             max: parent.max
 
-            values: ["2500", "1200", "8000", "6921", "3267", "9813", "10000"] // Dummy values until database exists
+            values: stepsVals
           }
-        }*/
+        }
 
         // Display only after getting steps to sync
         /*Graph {
@@ -319,5 +293,103 @@ Page {
     }
   }
 
-  Component.onCompleted: updateView()
+  Component.onCompleted: {
+    updateView()
+  }
+
+  function syncData() {
+    python.call('uwatch.syncTime', [root.devices, firmware], function() {})
+    python.call('uwatch.syncFirmware', [root.devices, firmware], function(firmware) {
+
+    })
+    python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, firmware], function(batteryLevel) {
+
+    })
+
+    python.call('uwatch.syncHeartRate', [deviceMAC, root.devices, firmware], function(heartRateLevel) {
+
+    })
+
+    /*python.call('uwatch.syncSteps', [root.devices, settings.firmware], function(stepsLevel) {
+
+    })*/
+
+    updateView();
+  }
+
+  function updateHeartRateView() {
+    heartRateVals = []
+
+    python.call('uwatch.getLatestHeartRate', [deviceMAC], function(result) {
+      heartRateLabel.labelText = result[0]
+    })
+
+    // Get the date range for which to fetch data from the database
+    python.call('uwatch.getISODateArray', [7], function(result) {
+      var tvalues = []
+
+      // Fetch all database entries for the date and get the max value
+      for(let i = 0; i < result.length; i++) {
+        python.call('uwatch.getHeartRateForDate', [deviceMAC, result[i]], function(result) {
+          if(result.length >0) {
+            tvalues.push(Math.max.apply(Math, result))
+          } else {
+            tvalues.push(0)
+          }
+          heartRateVals = tvalues
+        })
+      }
+    })
+
+  }
+
+  function updateStepsView() {
+    stepsVals = []
+
+    python.call('uwatch.getISODateArray', [1], function(result) {
+      python.call('uwatch.getStepsForDate', [deviceMAC, result[0]], function(result) {
+        console.log("Steps for the day:", result);
+        stepsLabel.labelText = result
+      })
+    })
+
+    // Get the date range for which to fetch data from the database
+    python.call('uwatch.getISODateArray', [7], function(result) {
+      var tvalues = []
+
+      // Fetch all database entries for the date and get the max value
+      for(let i = 0; i < result.length; i++) {
+        python.call('uwatch.getStepsForDate', [deviceMAC, result[i]], function(result) {
+          if(result > 0) {
+            tvalues.push(result)
+          } else {
+            tvalues.push(0)
+          }
+          stepsVals = tvalues
+        })
+      }
+    })
+
+  }
+
+  function updateView() {
+    python.call('uwatch.getShortISODateArray', [7], function(result) {
+      dateArray = result
+    })
+
+    python.call('uwatch.getFirmware', [deviceMAC], function(result) {
+      deviceView.firmware = result[0]
+    })
+
+    python.call('uwatch.getFirmwareVersion', [deviceMAC], function(result) {
+      deviceView.firmwareVersion = result[0]
+    })
+
+    python.call('uwatch.getLatestBatteryLevel', [deviceMAC], function(result) {
+      batteryLevelLabel.labelText = result[0] + " %"
+    })
+
+    updateHeartRateView()
+    updateStepsView()
+  }
 }
