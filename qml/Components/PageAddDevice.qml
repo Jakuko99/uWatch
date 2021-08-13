@@ -99,18 +99,20 @@ Page {
            id: pairDialog
            title: i18n.tr("Pair") + " " + addDeviceView.selectedFirmware
            text: i18n.tr("Are you sure you want to pair with") + " " + addDeviceView.selectedMAC + "?"
-           Button {
-               text: "Cancel"
-               onClicked: PopupUtils.close(pairDialog)
-           }
+
            Button {
                text: "Pair"
-               color: "#3EB34F"
+               color: theme.palette.normal.positive
 
                onClicked: {
                  PopupUtils.close(pairDialog)
                  PopupUtils.open(attemptPairDialogComponent)
                }
+           }
+
+           Button {
+               text: "Cancel"
+               onClicked: PopupUtils.close(pairDialog)
            }
        }
     }
@@ -127,7 +129,7 @@ Page {
             PopupUtils.close(attemptPairDialog)
             if(result) {
               python.call('uwatch.addDevice', [addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""], function(result) {
-                welcomeListModel.append({firmware: addDeviceView.selectedFirmware, deviceMAC: addDeviceView.selectedMAC})
+
               })
               PopupUtils.open(pairSuccessfulDialogComponent)
             } else {
@@ -147,11 +149,12 @@ Page {
 
         Button {
             text: "Close"
-            color: "#3EB34F"
 
             onClicked: {
               PopupUtils.close(pairSuccessfulDialog)
               pageStack.pop()
+              pageStack.pop()
+              pageStack.push(Qt.resolvedUrl("./PageWelcome.qml"), {newFirmware: addDeviceView.selectedFirmware, newMAC: addDeviceView.selectedMAC})
             }
         }
       }
