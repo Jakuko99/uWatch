@@ -43,13 +43,7 @@ MainView {
         property string pairedDeviceName: "None"
         property string mac: "None"
         property string firmware: "None"
-        property string devices: Qt.resolvedUrl(".")
-
-        // Some stuff I want to display to not make the App look empty at least until I implemented databases
-        property string firmwareVersion: ""
-        property int heartRateLevel: 0
-        property int stepsLevel: 0
-        property int calorieLevel: 0
+        //property string devices: Qt.resolvedUrl(".")
     }
 
     PageStack {
