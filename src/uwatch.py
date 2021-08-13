@@ -1,7 +1,8 @@
 import uGatt
 import uGattHelper as helper
 import DatabaseHelper as db
-from datetime import datetime
+from datetime import datetime, timedelta
+import time
 
 ############
 # Database #
@@ -29,23 +30,33 @@ def getDevices(appDataPath):
         if db.isOpen() is False:
             print("Database is not open! Attempting to open it!")
             db.openDatabase(appDataPath)
-            return db.getValues("watches", ["firmware", "mac"], [], "")
+            return db.getValues("watches", ["firmware", "mac"], [], "", "")
 
 
 def addDevice(mac, deviceName, firmware, firmwareVersion):
     if db.isOpen():
-        db.insertValues("watches", ["mac", "devicename", "firmware", "firmwareVersion"], [
-                        mac, deviceName, firmware, firmwareVersion])
+        db.insertValues("watches", ["mac", "devicename", "firmware",
+                                    "firmwareVersion"], [mac, deviceName,
+                                                         firmware,
+                                                         firmwareVersion])
+
+
+def deleteDevice(mac):
+    if db.isOpen():
+        db.deleteValue("watches", "WHERE mac == '"
+                       + mac + "'")
 
 
 def getFirmware(mac):
     if db.isOpen():
-        return db.getLastValue("watches", ["firmware"], [], "WHERE mac == '" + mac + "'", "")
+        return db.getLastValue("watches", ["firmware"], [],
+                               "WHERE mac == '" + mac + "'", "")
 
 
 def getFirmwareVersion(mac):
     if db.isOpen():
-        return db.getLastValue("watches", ["firmwareVersion"], [], "WHERE mac == '" + mac + "'", "")
+        return db.getLastValue("watches", ["firmwareVersion"], [],
+                               "WHERE mac == '" + mac + "'", "")
 
 
 def insertBattery(mac, batteryLevel):
@@ -62,7 +73,82 @@ def getLatestBatteryLevel(mac):
     if db.isOpen():
         return db.getLastValue("battery", ["batteryLevel"], [],
                                "WHERE mac == '" + mac + "'",
-                               "ORDER BY date DESC")
+                               "ORDER BY 'date' DESC")
+
+
+def getHeartRate(mac):
+    if db.isOpen():
+        return db.getValues("heartrate", ["heartrate", "date"], [],
+                            "WHERE mac == '" + mac + "'",
+                            "ORDER BY 'date' DESC")
+
+
+def getLatestHeartRate(mac):
+    if db.isOpen():
+        return db.getLastValue("heartrate", ["heartrate"], [],
+                               "WHERE mac == '" + mac + "'",
+                               "ORDER BY 'date' DESC")
+
+
+def getHeartRateForDate(mac, date):
+    if db.isOpen():
+        return db.getValues("heartrate", ["heartrate"], [],
+                            "WHERE date like '" + date + "%'", "")
+
+
+def insertHeartRate(mac, date, heartRate):
+    currentTime = ""
+    if date == "":
+        currentTime = datetime.isoformat(datetime.now())
+    else:
+        currentTime = date
+
+    if db.isOpen():
+        return db.insertValues("heartrate", ["date", "mac",
+                                             "heartrate"],
+                               [currentTime, mac, str(heartRate)])
+    else:
+        print("Cannot write heart rate! Database is not open!")
+
+
+def getSteps(mac):
+    if db.isOpen():
+        return db.getValues("steps", ["steps", "date"], [],
+                            "WHERE mac == '" + mac + "'",
+                            "ORDER BY 'date' DESC")
+
+
+def getStepsForDate(mac, date):
+    if db.isOpen():
+        stepsArray = db.getValues(
+            "steps", ["steps"], [], "WHERE date like '" + date + "%'", "")
+        steps = 0
+        if len(stepsArray) > 0:
+            for element in stepsArray:
+                steps += element[0]
+
+        return steps
+
+
+def insertSteps(mac, date, steps):
+    currentTime = ""
+    if date == "":
+        currentTime = datetime.isoformat(datetime.now())
+    else:
+        currentTime = date
+
+    if db.isOpen():
+        return db.insertValues("steps", ["date", "mac",
+                                         "steps"],
+                               [currentTime, mac, str(steps)])
+    else:
+        print("Cannot write steps! Database is not open!")
+
+
+def deleteValues(table, mac, date):
+    if db.isOpen():
+        db.deleteValue(table, "WHERE mac == '"
+                       + mac + "' AND date == '" + date + "'")
 
 #########
 # uGatt #
@@ -122,8 +208,10 @@ def syncBatteryLevel(mac, json, firmware):
     return insertBattery(mac, batteryLevel)
 
 
-def syncHeartRate(json, firmware):
-    return helper.parseToInt(uGatt.read_value(helper.getUUID(json, firmware, "Heart Rate Measurement")))
+def syncHeartRate(mac, json, firmware):
+    heartRate = helper.parseToInt(uGatt.read_value(
+        helper.getUUID(json, firmware, "Heart Rate Measurement")))
+    return insertHeartRate(mac, "", heartRate)
 
 
 def syncSteps(json, firmware):
@@ -140,10 +228,32 @@ def syncHardwareRevision(json, firmware):
 # Misc #
 ########
 
-def getShortISODate():
-    currentTime = datetime.now()
+def getShortISODateArray(max):
+    dateArray = []
 
-    month = ''.join('{:02X}'.format(currentTime.month))
-    day = ''.join('{:02X}'.format(currentTime.day))
+    for i in range(0, max):
+        currentTime = datetime.now() - timedelta(days=(max-1-i))
 
-    return month + "-" + day
+        month = ''.join('{:02}'.format(currentTime.month))
+        day = ''.join('{:02}'.format(currentTime.day))
+
+        date = month + "-" + day
+        dateArray.append(date)
+
+    return dateArray
+
+
+def getISODateArray(max):
+    dateArray = []
+
+    for i in range(0, max):
+        currentTime = datetime.now() - timedelta(days=(max-1-i))
+
+        year = ''.join('{:04}'.format(currentTime.year))
+        month = ''.join('{:02}'.format(currentTime.month))
+        day = ''.join('{:02}'.format(currentTime.day))
+
+        date = year + "-" + month + "-" + day
+        dateArray.append(date)
+
+    return dateArray
