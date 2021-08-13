@@ -4,14 +4,6 @@ import Ubuntu.Components 1.3
 Rectangle {
   property var values: []
 
-  function createValues(parent) {
-    //Console.log("Leparent " + parent);
-    var xComponent = Qt.createComponent("xValue.qml");
-    values.forEach((item, index) => {
-      var xValue = xComponent.createObject(parent, {x: 0, y: 0, valueText: item});
-    });
-  }
-
   anchors {
     bottom: parent.bottom
   }
@@ -56,8 +48,28 @@ Rectangle {
 
       height: units.gu(4)
 
-      Component.onCompleted: {
-        createValues(this)
+      XValue {
+        valueText: values.length > 0 ? values[0] : ""
+      }
+
+      XValue {
+        valueText: values.length > 0 ? values[1] : ""
+      }
+
+      XValue {
+        valueText: values.length > 0 ? values[2] : ""
+      }
+      XValue {
+        valueText: values.length > 0 ? values[3] : ""
+      }
+      XValue {
+        valueText: values.length > 0 ? values[4] : ""
+      }
+      XValue {
+        valueText: values.length > 0 ? values[5] : ""
+      }
+      XValue {
+        valueText: values.length > 0 ? values[6] : ""
       }
     }
   }

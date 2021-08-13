@@ -4,22 +4,6 @@ import Ubuntu.Components 1.3
 Rectangle {
   property int max: 100
 
-  function createValues(parent) {
-    //Console.log("Leparent " + parent);
-    var values = []
-    var m = max/5
-    for(var i = 5; i>0; i--) {
-      values[i] = Math.round(m*i)
-    }
-
-    values.sort(function(a,b){return b-a});
-
-    var component = Qt.createComponent("yValue.qml");
-    values.forEach((item, index) => {
-      var value = component.createObject(parent, {x: 0, y: 0, valueText: item});
-    });
-  }
-
   anchors {
     left: parent.left
   }
@@ -61,8 +45,28 @@ Rectangle {
       height: parent.height
       width: parent.width
 
-      Component.onCompleted: {
+      /*Component.onCompleted: {
         createValues(this);
+      }*/
+
+      YValue {
+        valueText: Math.round(max)
+      }
+
+      YValue {
+        valueText: Math.round(max/5*4)
+      }
+
+      YValue {
+        valueText: Math.round(max/5*3)
+      }
+
+      YValue {
+        valueText: Math.round(max/5*2)
+      }
+
+      YValue {
+        valueText: Math.round(max/5)
       }
     }
   }

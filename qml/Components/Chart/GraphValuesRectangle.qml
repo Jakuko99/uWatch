@@ -5,15 +5,11 @@ Rectangle {
   property var values: []
   property int max: 0
 
-  function createValues(parent) {
-    var component = Qt.createComponent("GraphValues.qml");
+  function calculateHeight(parentHeight, value) {
+    var newPercent = value*100/max
+    var newHeight = parentHeight * newPercent/100
 
-    values.forEach((item, index) => {
-      var newPercent = item*100/max
-      var newHeight = parent.height * newPercent/100
-
-      var value = component.createObject(parent, {x: 0, y: 0, rectangleHeight: newHeight - units.gu(0.5)});
-    });
+    return newHeight - units.gu(1)
   }
 
   color: "transparent"
@@ -27,8 +23,26 @@ Rectangle {
 
     height: parent.height
 
-    Component.onCompleted: {
-      createValues(this)
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[0]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[1]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[2]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[3]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[4]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[5]) : 0
+    }
+    GraphValues {
+      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[6]) : 0
     }
   }
 }
