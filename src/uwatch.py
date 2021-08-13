@@ -2,7 +2,6 @@ import uGatt
 import uGattHelper as helper
 import DatabaseHelper as db
 from datetime import datetime, timedelta
-import time
 
 ############
 # Database #

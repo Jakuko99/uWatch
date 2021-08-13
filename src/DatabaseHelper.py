@@ -1,7 +1,5 @@
-import JSONHelper
 import json
 import Database as db
-import sys
 
 ########
 # Main #
@@ -19,7 +17,7 @@ def openDatabase(appDataPath):
     try:
         db.open(appDataPath)
         return True
-    except Exception as e:
+    except:
         return False
 
 

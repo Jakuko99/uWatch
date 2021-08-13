@@ -1,7 +1,4 @@
 import json
-import os
-import posixpath
-from pathlib import Path
 
 
 def getNodes(node):
