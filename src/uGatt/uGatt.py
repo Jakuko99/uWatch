@@ -32,6 +32,8 @@ def init():
                 from Backend.bluetoothctl import get_connection_success_filter
                 from Backend.bluetoothctl import get_new_device_filter
                 from Backend.bluetoothctl import get_pair_successful_filter
+                from Backend.bluetoothctl import device_connected
+                from Backend.bluetoothctl import get_connected_filter
 
                 if backend == "gatttool":
                     from Backend.gatttool import connect_device
@@ -42,17 +44,13 @@ def init():
                     from Backend.gatttool import get_disconnect_success_filter
                     from Backend.gatttool import get_read_value_filter
                     from Backend.gatttool import get_write_value_filter
-                    from Backend.gatttool import get_connected_filter
-                    from Backend.gatttool import device_connected
                     from Backend.gatttool import quit_interactive
                 else:
-                    from Backend.bluetoothctl import device_connected
                     from Backend.bluetoothctl import disconnect_device
                     from Backend.bluetoothctl import device_paired
                     from Backend.bluetoothctl import unpair_device
                     from Backend.bluetoothctl import read
                     from Backend.bluetoothctl import write
-                    from Backend.bluetoothctl import get_connected_filter
                     from Backend.bluetoothctl import get_disconnect_success_filter
                     from Backend.bluetoothctl import get_read_value_filter
                     from Backend.bluetoothctl import get_remove_device_filter
@@ -123,17 +121,33 @@ def connect(mac):
 
 def is_connected(mac):
     if process != None:
-        if listener != None:
-            listener.log_verbose(verbose)
-            send_expect(listener, get_connected_filter())
-            listener.send_input(device_connected, mac, 0)
+        p = None
+        if backend != "bluetoothctl":
+            p = force_backend("bluetoothctl")
+        else:
+            p = process
 
-            time.sleep(1)
+        time.sleep(2)
+        l = start_listening(p, True)
+        l.log_verbose(False)
+        send_expect(l, get_connected_filter())
+        l.send_input(device_connected, mac, 0)
 
-            if len(listener.get_output()) > 0:
-                return True
-            else:
-                return False
+        time.sleep(1)
+
+        l.send_input(None, quit_interactive(), 0)
+
+        stop_listening(l)
+        stop_interactive(p)
+
+        out = l.get_output()
+
+        print(out)
+
+        if len(out) > 0:
+            return True
+        else:
+            return False
 
 
 def disconnect(mac):
@@ -166,6 +180,8 @@ def pair(mac):
         send_expect(l, get_pair_successful_filter())
         l.send_input(pair_device, mac, 0)
         time.sleep(3)
+        l.send_input(disconnect_device, mac, 0)
+        time.sleep(1)
         l.send_input(None, quit_interactive(), 0)
 
         stop_listening(l)
@@ -235,6 +251,7 @@ def read_value(uuid):
     if process != None:
         if listener != None:
             send_expect(listener, get_read_value_filter())
+            listener.log_verbose(True)
             listener.send_input(read, uuid, 0)
 
             time.sleep(3)
