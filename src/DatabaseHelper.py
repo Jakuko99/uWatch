@@ -30,11 +30,11 @@ def isOpen():
         return False
 
 
-def getValues(tableName, columns, joins, conditions):
+def getValues(tableName, columns, joins, conditions, orderBy):
     if isOpen():
         cursor = db.connection.cursor()
         cursor.execute(db.createSelectQuery(
-            tableName, columns, joins, conditions, ""))
+            tableName, columns, joins, conditions, orderBy))
 
         return cursor.fetchall()
 
@@ -60,6 +60,13 @@ def insertValues(tableName, columns, values):
             print("Error:", e)
             return False
     return False
+
+
+def deleteValue(tableName, condition):
+    if isOpen():
+        cursor = db.connection.cursor()
+        cursor.execute(db.createDeleteQuery(tableName, condition))
+        db.apply()
 
 ########################################
 # Initial setup to create the database #

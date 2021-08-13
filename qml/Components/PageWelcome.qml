@@ -5,23 +5,17 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 import Qt.labs.platform 1.0
+import Ubuntu.Components.Popups 1.3
 
 Page {
     id: welcomeView
     anchors.fill: parent
 
-    function listDevices(appDataPath) {
-      console.log("AppDataPath:", appDataPath.toString());
-      python.call('uwatch.databaseExists', [appDataPath.toString()], function(result) {
-        console.log("Database exists:", result);
-        if(result == true) {
-          python.call('uwatch.getDevices', [appDataPath.toString()], function(devices) {
-            console.log(devices);
-            devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
-          });
-        }
-      });
-    }
+    property string selectedDevice: ""
+
+    // Workaround to add a device after it was newly add
+    property string newFirmware: ""
+    property string newMAC: ""
 
     header: BaseHeader {
         id: welcomeViewHeader
@@ -104,13 +98,65 @@ Page {
                 actions: [
                     Action {
                         iconName: "delete"
+
+                        onTriggered: {
+                          selectedDevice = deviceMAC
+                          PopupUtils.open(deleteDeviceDialogComponent)
+                        }
                     }
                 ]
             }
 
-            onClicked: pageStack.push(Qt.resolvedUrl("PageDevice.qml"), {deviceMAC: deviceMAC})
+            onClicked: pageStack.push(Qt.resolvedUrl("PageDevice.qml"), {deviceMAC: deviceMAC, firmware: firmware})
+        }
+      }
+
+      Component {
+        id: deleteDeviceDialogComponent
+        Dialog {
+          id: deleteDeviceDialog
+          title: i18n.tr("Delete device")
+          text: i18n.tr("Are you sure you want to delete this device?")
+
+          Button {
+              text: "Delete"
+              color: theme.palette.normal.negative
+
+              onClicked: {
+                PopupUtils.close(deleteDeviceDialog)
+                deleteDevice()
+              }
+          }
+
+          Button {
+              text: "Cancel"
+
+              onClicked: {
+                PopupUtils.close(deleteDeviceDialog)
+              }
+          }
         }
       }
 
     Component.onCompleted: listDevices(StandardPaths.writableLocation(StandardPaths.AppDataLocation))
+
+    function listDevices(appDataPath) {
+      if(newFirmware != "" && newMAC != "") {
+        welcomeListModel.append({firmware: newFirmware, deviceMAC: newMAC});
+      }
+
+      python.call('uwatch.databaseExists', [appDataPath.toString()], function(result) {
+        if(result == true) {
+          python.call('uwatch.getDevices', [appDataPath.toString()], function(devices) {
+            devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
+          });
+        }
+      });
+    }
+
+    function deleteDevice() {
+      python.call('uwatch.deleteDevice', [selectedDevice], function(result) {
+
+      });
+    }
 }

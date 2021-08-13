@@ -87,7 +87,7 @@ def createSelectQuery(tableName, columns, joins, conditions, sort):
     query = "SELECT "
 
     for column in columns:
-        query += column + ", "
+        query += '"' + column + '", '
 
     query = query[0:len(query)-2]
     query += " FROM " + tableName
@@ -102,4 +102,10 @@ def createSelectQuery(tableName, columns, joins, conditions, sort):
         query += " " + sort
 
     query += ";"
+    return query
+
+
+def createDeleteQuery(tableName, condition):
+    query = "DELETE FROM " + tableName + " " + condition + ";"
+    print(query)
     return query
