@@ -4,7 +4,7 @@ import os
 import time
 from datetime import datetime
 
-verbose = True
+verbose = False
 
 backend = None
 process = None
