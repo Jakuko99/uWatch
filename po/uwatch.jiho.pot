@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-12 22:44+0000\n"
+"POT-Creation-Date: 2021-08-16 21:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -131,22 +131,30 @@ msgstr ""
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:22
+#: ../qml/Components/PageWelcome.qml:23
 msgid "Start"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:65
+#: ../qml/Components/PageWelcome.qml:66
 msgid "No watches yet!"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:77
+#: ../qml/Components/PageWelcome.qml:78
 msgid "To start, just click on '+' in the top bar"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:118
+#: ../qml/Components/PageWelcome.qml:120
 msgid "Delete device"
 msgstr ""
 
-#: ../qml/Components/PageWelcome.qml:119
+#: ../qml/Components/PageWelcome.qml:121
 msgid "Are you sure you want to delete this device?"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:147
+msgid "Deleting device"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:148
+msgid "Trying to delete the device "
 msgstr ""
