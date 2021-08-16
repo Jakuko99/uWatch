@@ -12,6 +12,7 @@ Page {
     anchors.fill: parent
 
     property string selectedDevice: ""
+    property int selectedIndex: -1
 
     // Workaround to add a device after it was newly add
     property string newFirmware: ""
@@ -64,7 +65,7 @@ Page {
 
                 text: i18n.tr("No watches yet!")
                 textSize: Label.Large
-                color: root.accentColor
+                color: settings.accentColor
                 visible: welcomeListView.count === 0 && !welcomeListModel.loading
             }
 
@@ -100,6 +101,7 @@ Page {
                         iconName: "delete"
 
                         onTriggered: {
+                          selectedIndex = index
                           selectedDevice = deviceMAC
                           PopupUtils.open(deleteDeviceDialogComponent)
                         }
@@ -138,6 +140,15 @@ Page {
         }
       }
 
+      Component {
+        id: deletingDeviceDialogComponent
+        Dialog {
+          id: deletingDeviceDialog
+          title: i18n.tr("Deleting device")
+          text: i18n.tr("Trying to delete the device " + selectedDevice)
+        }
+      }
+
     Component.onCompleted: listDevices(StandardPaths.writableLocation(StandardPaths.AppDataLocation))
 
     function listDevices(appDataPath) {
@@ -148,15 +159,23 @@ Page {
       python.call('uwatch.databaseExists', [appDataPath.toString()], function(result) {
         if(result == true) {
           python.call('uwatch.getDevices', [appDataPath.toString()], function(devices) {
-            devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
+            if(devices.length > 0) {
+              devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
+            }
           });
         }
       });
     }
 
     function deleteDevice() {
-      python.call('uwatch.deleteDevice', [selectedDevice], function(result) {
-
-      });
+      python.call('uwatch.unpairDevice', [selectedDevice], function(result) {
+        if(result == true) {
+          python.call('uwatch.deleteDevice', [selectedDevice], function(deleted) {
+            if(deleted == true) {
+              welcomeListModel.remove(selectedIndex)
+            }
+          })
+        }
+      })
     }
 }

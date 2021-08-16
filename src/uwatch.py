@@ -40,10 +40,26 @@ def addDevice(mac, deviceName, firmware, firmwareVersion):
                                                          firmwareVersion])
 
 
+def deviceExists(mac):
+    if db.isOpen():
+        count = db.getLastValue("watches", ["*"], [], "WHERE mac == '" + mac + "'",
+                                "ORDER BY 'date' DESC")
+
+        if count is not None and count > 0:
+            return True
+        else:
+            return False
+
+
 def deleteDevice(mac):
     if db.isOpen():
         db.deleteValue("watches", "WHERE mac == '"
                        + mac + "'")
+
+        if deviceExists(mac) is not True:
+            return True
+
+    return False
 
 
 def getFirmware(mac):
@@ -174,6 +190,10 @@ def add_device(json):
 
 def pairDevice(mac):
     return uGatt.pair(mac)
+
+
+def unpairDevice(mac):
+    return uGatt.unpair(mac)
 
 
 def connectDevice(mac):
