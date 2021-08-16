@@ -18,3 +18,4 @@ from .Receiver import get_disconnect_success_filter
 from .Receiver import get_pair_successful_filter
 from .Receiver import get_remove_device_filter
 from .Receiver import get_read_value_filter
+from .Receiver import get_device_paired_filter
