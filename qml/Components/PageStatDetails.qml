@@ -14,6 +14,7 @@ Page {
     property string page: ""
 
     property string selectedFullDate: ""
+    property int selectedIndex: -1
 
     header: BaseHeader {
         id: pageStatDetailsHeader
@@ -53,7 +54,7 @@ Page {
 
                 text: i18n.tr("No stats to display!")
                 textSize: Label.Large
-                color: root.accentColor
+                color: settings.accentColor
                 visible: statDetailsListView.count === 0 && !statDetailsListModel.loading
             }
 
@@ -89,6 +90,7 @@ Page {
                         iconName: "delete"
 
                         onTriggered: {
+                          selectedIndex = index
                           selectedFullDate = fullDate
                           PopupUtils.open(deleteValueDialogComponent)
                         }
@@ -178,5 +180,6 @@ Page {
       python.call('uwatch.deleteValues', [table, deviceMAC, date], function(result) {
 
       });
+      statDetailsListModel.remove(selectedIndex);
     }
 }

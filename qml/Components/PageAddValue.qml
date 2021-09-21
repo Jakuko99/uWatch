@@ -54,7 +54,7 @@ Page {
         Label {
           text: i18n.tr("Date")
           textSize: Label.Large
-          color: root.accentColor
+          color: settings.accentColor
         }
 
         DatePicker {
@@ -79,7 +79,7 @@ Page {
         Label {
           text: i18n.tr("Time")
           textSize: Label.Large
-          color: root.accentColor
+          color: settings.accentColor
         }
 
         DatePicker {
@@ -94,7 +94,7 @@ Page {
         Label {
           text: i18n.tr(page)
           textSize: Label.Large
-          color: root.accentColor
+          color: settings.accentColor
         }
 
         TextField {
@@ -140,7 +140,7 @@ Page {
       }
     }
 
-    function addValue(date, time, value) {
+    function addValue(d, t, val) {
       let action = ""
       switch(page) {
         case "Heart rate":
@@ -157,9 +157,11 @@ Page {
       let random = Math.floor(Math.random() * 10000) + 1000;
 
       if (action != "none") {
-        python.call('uwatch.' + action, [deviceMAC, date + "T" + time + "." + random, value], function(result) {
+        python.call('uwatch.' + action, [deviceMAC, d + "T" + t + "." + random, val], function(result) {
 
         })
+
+        statDetailsListModel.append({value: val, date: d + " " + t, fullDate: d + "T" + t + "." + random});
       }
       pageStatBottomEdge.collapse();
     }
