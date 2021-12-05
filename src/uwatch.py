@@ -1,7 +1,9 @@
 import uGatt
 import uGattHelper as helper
 import DatabaseHelper as db
+import ota
 from datetime import datetime, timedelta
+from distutils.version import StrictVersion
 
 ############
 # Database #
@@ -74,6 +76,15 @@ def getFirmwareVersion(mac):
                                "WHERE mac == '" + mac + "'", "")
 
 
+def updateFirmwareVersion(mac, firmware, firmwareVersion):
+    if db.isOpen():
+        return db.updateValue("watches", ["firmwareVersion"],
+                              [firmwareVersion],
+                              "mac", mac)
+    else:
+        print("Cannot update firmware version! Database is not open!")
+
+
 def insertBattery(mac, batteryLevel):
     currentTime = datetime.isoformat(datetime.now())
     if db.isOpen():
@@ -119,9 +130,10 @@ def insertHeartRate(mac, date, heartRate):
         currentTime = date
 
     if db.isOpen():
-        return db.insertValues("heartrate", ["date", "mac",
-                                             "heartrate"],
-                               [currentTime, mac, str(heartRate)])
+        if heartRate != 0:
+            return db.insertValues("heartrate", ["date", "mac",
+                                                 "heartrate"],
+                                   [currentTime, mac, str(heartRate)])
     else:
         print("Cannot write heart rate! Database is not open!")
 
@@ -153,9 +165,16 @@ def insertSteps(mac, date, steps):
         currentTime = date
 
     if db.isOpen():
-        return db.insertValues("steps", ["date", "mac",
-                                         "steps"],
-                               [currentTime, mac, str(steps)])
+        date = currentTime.split("T")[0]
+        savedCount = getStepsForDate(mac, date)
+        print(savedCount)
+        if steps > savedCount:
+            steps = steps - savedCount
+
+        if steps != 0 and steps != savedCount:
+            return db.insertValues("steps", ["date", "mac",
+                                             "steps"],
+                                   [currentTime, mac, str(steps)])
     else:
         print("Cannot write steps! Database is not open!")
 
@@ -204,43 +223,68 @@ def getConnectionState(mac):
     return uGatt.is_connected(mac)
 
 
-def syncTime(json, firmware):
-    if uGatt.getBackend() == "bluetoothctl":
-        uGatt.write_value_uuid(helper.getUUID(
-            json, firmware, "Current Time"), helper.currentTimeToHex())
-    else:
-        uGatt.write_handle(helper.getHandle(
-            json, firmware, "Current Time"), helper.currentTimeToHex())
+##################
+# Device actions #
+##################
 
 
-def syncFirmware(json, firmware):
-    return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Software Revision String")))
+def syncTime(json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(json, firmware, "Current Time")
+
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        if uGatt.getBackend() == "bluetoothctl":
+            uGatt.write_value_uuid(helper.getUUID(
+                json, firmware, "Current Time"), helper.currentTimeToHex())
+        else:
+            uGatt.write_handle(helper.getHandle(
+                json, firmware, "Current Time"), helper.currentTimeToHex())
 
 
-def syncFirmwareRevision(json, firmware):
-    return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Firmware Revision String")))
+def syncFirmware(json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(
+        json, firmware, "Software Revision String")
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Software Revision String")), "big-endian")
 
 
-def syncBatteryLevel(mac, json, firmware):
-    batteryLevel = helper.parseToInt(uGatt.read_value(
-        helper.getUUID(json, firmware, "Battery Level")))
-    return insertBattery(mac, batteryLevel)
+def syncFirmwareRevision(json, mac, firmware):
+    version = helper.parseToString(uGatt.read_value(helper.getUUID(
+        json, firmware, "Firmware Revision String")), "big-endian")
+
+    return updateFirmwareVersion(mac, firmware, version)
 
 
-def syncHeartRate(mac, json, firmware):
-    heartRate = helper.parseToInt(uGatt.read_value(
-        helper.getUUID(json, firmware, "Heart Rate Measurement")))
-    return insertHeartRate(mac, "", heartRate)
+def syncBatteryLevel(mac, json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(json, firmware, "Battery Level")
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        batteryLevel = helper.parseToInt(uGatt.read_value(
+                helper.getUUID(json, firmware, "Battery Level")), "big-endian")
+        return insertBattery(mac, batteryLevel)
 
 
-def syncSteps(json, firmware):
-    heartRateLevel = helper.parseToInt(uGatt.read_value(
-        helper.getUUID(json, firmware, "Heart Rate Measurement")))
-    #return insertBattery(mac, heartRateLevel)
+def syncHeartRate(mac, json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(
+        json, firmware, "Heart Rate Measurement")
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        heartRate = helper.parseToInt(uGatt.read_value(
+                helper.getUUID(json, firmware, "Heart Rate Measurement")), "big-endian")
+        return insertHeartRate(mac, "", heartRate)
 
 
-def syncHardwareRevision(json, firmware):
-    return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Hardware Revision String")))
+def syncSteps(mac, json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(json, firmware, "Step count")
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        stepCount = helper.parseToInt(uGatt.read_value(
+                helper.getUUID(json, firmware, "Step count")), "little-endian")
+
+        return insertSteps(mac, "", stepCount)
+
+
+def syncHardwareRevision(json, firmware, firmwareVersion):
+    UUIDValidVersion = helper.getValidVersion(
+        json, firmware, "Hardware Revision String")
+    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+        return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Hardware Revision String")), "big-endian")
 
 
 ########

@@ -41,13 +41,18 @@ Page {
 
               onTriggered: {
                 python.call('uwatch.getConnectionState', [deviceMAC], function(result) {
-                  console.log(result);
                   if(result) {
-                    syncData()
+                    if(firmwareVersion == "") {
+                      updateFirmwareRevision();
+                    }
+                    syncData();
                   } else {
                     python.call('uwatch.connectDevice', [deviceMAC], function(connected) {
                       if(connected) {
-                          syncData()
+                        if(firmwareVersion == "") {
+                          updateFirmwareRevision();
+                        }
+                        syncData();
                       }
                     })
                   }
@@ -90,7 +95,7 @@ Page {
 
         StatsLabel {
           id: heartRateLabel
-          labelText: settings.heartRateLevel
+          labelText: "0"
         }
       }
 
@@ -142,7 +147,7 @@ Page {
         Label {
           id: lblDeviceName
 
-          text: firmware // Will be changed as soon as databases are implemented
+          text: firmware
           textSize: Label.Large
         }
 
@@ -294,25 +299,25 @@ Page {
   }
 
   Component.onCompleted: {
-    updateView()
+    updateView();
   }
 
   function syncData() {
-    python.call('uwatch.syncTime', [root.devices, firmware], function() {})
-    python.call('uwatch.syncFirmware', [root.devices, firmware], function(firmware) {
+    python.call('uwatch.syncTime', [root.devices, firmware, firmwareVersion], function() {})
+    python.call('uwatch.syncFirmware', [root.devices, firmware, firmwareVersion], function(firmware) {
 
     })
-    python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, firmware], function(batteryLevel) {
-
-    })
-
-    python.call('uwatch.syncHeartRate', [deviceMAC, root.devices, firmware], function(heartRateLevel) {
+    python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, firmware, firmwareVersion], function(batteryLevel) {
 
     })
 
-    /*python.call('uwatch.syncSteps', [root.devices, settings.firmware], function(stepsLevel) {
+    python.call('uwatch.syncHeartRate', [deviceMAC, root.devices, firmware, firmwareVersion], function(heartRateLevel) {
 
-    })*/
+    })
+
+    python.call('uwatch.syncSteps', [deviceMAC, root.devices, firmware, firmwareVersion], function(stepsLevel) {
+
+    })
 
     updateView();
   }
@@ -348,7 +353,6 @@ Page {
 
     python.call('uwatch.getISODateArray', [1], function(result) {
       python.call('uwatch.getStepsForDate', [deviceMAC, result[0]], function(result) {
-        console.log("Steps for the day:", result);
         stepsLabel.labelText = result
       })
     })
@@ -391,5 +395,11 @@ Page {
 
     updateHeartRateView()
     updateStepsView()
+  }
+
+  function updateFirmwareRevision() {
+    python.call('uwatch.syncFirmwareRevision', [root.devices, deviceMAC, firmware], function(version) {
+      
+    })
   }
 }
