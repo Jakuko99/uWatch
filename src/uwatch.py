@@ -1,7 +1,6 @@
 import uGatt
 import uGattHelper as helper
 import DatabaseHelper as db
-import ota
 from datetime import datetime, timedelta
 from distutils.version import StrictVersion
 
