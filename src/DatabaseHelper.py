@@ -60,6 +60,21 @@ def insertValues(tableName, columns, values):
     return False
 
 
+def updateValue(tableName, columns, values, IDCol, IDVal):
+
+    if isOpen():
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute(db.createUpdateQuery(
+                tableName, columns, values, IDCol, IDVal))
+            db.apply()
+            return True
+        except Exception as e:
+            print("Error:", e)
+            return False
+    return False
+
+
 def deleteValue(tableName, condition):
     if isOpen():
         cursor = db.connection.cursor()

@@ -107,5 +107,19 @@ def createSelectQuery(tableName, columns, joins, conditions, sort):
 
 def createDeleteQuery(tableName, condition):
     query = "DELETE FROM " + tableName + " " + condition + ";"
+
+    return query
+
+
+def createUpdateQuery(tableName, columns, values, IDCol, IDVal):
+    query = "UPDATE " + tableName
+
+    for i in range(len(columns)):
+        query += " SET " + columns[i] + " = '" + values[i] + "', "
+
+    query = query[0:len(query)-2]
+    query += " WHERE " + IDCol + " = '" + IDVal + "';"
+
     print(query)
+
     return query
