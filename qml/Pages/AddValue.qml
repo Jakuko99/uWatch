@@ -6,6 +6,8 @@ import io.thp.pyotherside 1.3
 import Ubuntu.Components.Pickers 1.3
 import Ubuntu.Components.Themes 1.3
 
+import "../Components"
+
 Page {
     id: pageAddValue
 
