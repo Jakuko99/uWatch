@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 
+import "../Components"
+
 Page {
     id: settingsView
     anchors.fill: parent
@@ -12,13 +14,11 @@ Page {
     header: BaseHeader {
         id: settingsViewHeader
         title: i18n.tr('Settings')
+
+        flickable: settingsFlickable
     }
 
     ScrollView {
-      anchors {
-        top: settingsViewHeader.bottom
-      }
-
       width: parent.width
       height: parent.height
       contentItem: settingsFlickable
@@ -26,39 +26,56 @@ Page {
 
     Flickable {
       id: settingsFlickable
-      anchors.fill: parent
+      width: parent.width
+      height: parent.height
 
-      Label {
-        id: settingsSyncTitleLabel
+      contentHeight: settingsColumn.height
+
+      Column {
+        id: settingsColumn
 
         anchors {
           left: parent.left
+          right: parent.right
           top: parent.top
-          topMargin: units.gu(2)
-          bottomMargin: units.gu(2)
-          leftMargin: units.gu(2)
-          rightMargin: units.gu(2)
+          bottom: parent.bottom
+          topMargin: settings.margin
+          leftMargin: settings.margin
+          rightMargin: settings.margin
+          bottomMargin: units.gu(4)
         }
 
-        color: settings.accentColor
+        spacing: settings.margin
 
-        text: i18n.tr('Sync')
-        textSize: Label.Large
-      }
+        Label {
+          id: syncTitleLabel
 
-      Label {
-        id: settingsSyncAtStartLabel
+          anchors {
+            left: parent.left
+            right: parent.right
+            topMargin: settings.margin
+            leftMargin: settings.margin
+          }
 
-        anchors {
-          left: parent.left
-          top: settingsSyncTitleLabel.bottom
-          topMargin: units.gu(2)
-          bottomMargin: units.gu(2)
-          leftMargin: units.gu(2)
-          rightMargin: units.gu(2)
+          color: settings.accentColor
+
+          text: i18n.tr('Sync')
+          textSize: Label.Large
         }
 
-        text: i18n.tr('Sync watch after it connected')
+        Label {
+          id: syncAtStartLabel
+
+          anchors {
+            left: parent.left
+            right:parent.right
+            leftMargin: settings.margin
+            rightMargin: settings.margin
+          }
+
+          text: i18n.tr('Sync watch after it connected')
+          wrapMode: Text.Wrap
+        }
       }
     }
 }
