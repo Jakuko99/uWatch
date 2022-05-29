@@ -5,7 +5,11 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 import Qt.labs.platform 1.0
+import QtQuick.LocalStorage 2.0
 import "Components"
+
+import "./js/Database.js" as DB
+import "./js/Helper.js" as Helper
 
 MainView {
     id: root
@@ -17,38 +21,20 @@ MainView {
     height: units.gu(75)
 
     property string devices: "{}"
-    property string databaseStruct: "{}"
-
-    property string accentColor: "#c74375"
-
-    function readTextFile(fileUrl, callback){
-       var xhr = new XMLHttpRequest;
-       var result = "";
-       xhr.open("GET", fileUrl); // set Method and File
-       xhr.send(); // begin the request
-
-       xhr.onreadystatechange = function () {
-           if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
-               var response = xhr.responseText;
-
-               if(callback) callback(response);
-           }
-       }
-    }
 
     Settings {
         id: settings
-        property bool firstRun: true
-        property bool pairedDevice: false
-        property string pairedDeviceName: "None"
-        property string mac: "None"
-        property string firmware: "None"
-        //property string devices: Qt.resolvedUrl(".")
+
+        // Theme settings
+        property string accentColor: "#c74375"
+
+        // Backend Settings
+        property bool initializeAtStart: true
     }
 
     PageStack {
       id: pageStack
-      Component.onCompleted: pageStack.push(Qt.resolvedUrl("./Components/PageWelcome.qml"))
+      Component.onCompleted: pageStack.push(Qt.resolvedUrl("./Pages/Welcome.qml"))
     }
 
     Python {
@@ -58,10 +44,7 @@ MainView {
             addImportPath(Qt.resolvedUrl('../src/'));
             addImportPath(Qt.resolvedUrl('../src/uGatt'));
 
-            importModule('uwatch', function() {
-                python.call('uwatch.initialize', function(initialized) {
-                });
-            });
+            importModule('uwatch', function() {});
         }
 
         onError: {
@@ -69,18 +52,5 @@ MainView {
         }
     }
 
-    Component.onCompleted: {
-
-      readTextFile(Qt.resolvedUrl("../assets/devices.json"), function(result) {
-        root.devices = result
-      });
-
-      var appDataPath = StandardPaths.writableLocation(StandardPaths.AppDataLocation)
-
-      readTextFile(Qt.resolvedUrl("../assets/database.json"), function(result) {
-        python.call('uwatch.initialSetup', [appDataPath.toString(), result], function(state) {
-
-        });
-      });
-    }
+    Component.onCompleted: DB.openDatabase();
 }
