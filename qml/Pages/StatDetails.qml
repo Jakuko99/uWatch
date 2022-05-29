@@ -7,6 +7,9 @@ import io.thp.pyotherside 1.3
 import Ubuntu.Components.Themes 1.3
 import Ubuntu.Components.Popups 1.3
 
+import "../Components"
+import "../js/Database.js" as DB
+
 Page {
     id: pageStatDetails
 
@@ -108,7 +111,7 @@ Page {
         hint.text: i18n.tr("Add value")
         preloadContent: true
 
-        contentUrl: Qt.resolvedUrl("PageAddValue.qml")
+        contentUrl: Qt.resolvedUrl("AddValue.qml")
     }
 
     Component {
@@ -141,26 +144,33 @@ Page {
     Component.onCompleted: listStats()
 
     function listStats() {
-      let action = ""
+      let values = null
       switch(page) {
         case "Heart rate":
-          action = "getHeartRate";
+          values = DB.readAll("heartrate");
           break;
         case "Steps":
-          action = "getSteps";
+          values = DB.readAll("steps");
           break;
         default:
-          action = "none";
+          //action = "none";
           break;
       }
 
-      python.call('uwatch.' + action, [deviceMAC], function(result) {
-        result.forEach((el, i) => {
-          let date = el[1].split("T")[0]
-          let time = el[1].split("T")[1].split(".")[0]
-          statDetailsListModel.append({value: el[0], date: date + " " + time, fullDate: el[1]});
-        })
-      });
+      for(let i = 0; i < values.rows.length; i++) {
+        let row = values.rows.item(i);
+        let date = new Date(Date.parse(row.date)).toUTCString();//values[2].split("T")[0]
+        //let time = values[2].split("T")[1].split(".")[0]
+        statDetailsListModel.append({value: row.value, date: date, fullDate: row.date});
+      }
+
+      //python.call('uwatch.' + action, [deviceMAC], function(result) {
+      //  result.forEach((el, i) => {
+      //    let date = el[1].split("T")[0]
+      //    let time = el[1].split("T")[1].split(".")[0]
+      //    statDetailsListModel.append({value: el[0], date: date + " " + time, fullDate: el[1]});
+      //  })
+      //});
     }
 
     function deleteValue(date) {

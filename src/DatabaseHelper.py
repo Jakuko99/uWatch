@@ -1,110 +1,36 @@
-import json
-import Database as db
-
-########
-# Main #
-########
-
-
-def exists(appDataPath):
-    if db.exists(appDataPath):
-        return True
-    else:
-        return False
-
-
-def openDatabase(appDataPath):
-    try:
-        db.open(appDataPath)
-        return True
-    except:
-        return False
-
-
-def isOpen():
-    if db.connection is not None:
-        return True
-    else:
-        return False
+import sqlite3 as sqlite
 
 
 def getValues(tableName, columns, joins, conditions, orderBy):
-    if isOpen():
-        cursor = db.connection.cursor()
-        cursor.execute(db.createSelectQuery(
-            tableName, columns, joins, conditions, orderBy))
+    database = sqlite.connect(
+        "/home/phablet/.local/share/uwatch.jiho/Database/uWatch.db")
 
-        return cursor.fetchall()
+    print("Database is open.")
+    cursor = database.cursor()
+    cursor.execute(createSelectQuery(
+        tableName, columns, joins, conditions, orderBy))
 
-
-def getLastValue(tableName, columns, joins, conditions, orderBy):
-    if isOpen():
-        cursor = db.connection.cursor()
-        cursor.execute(db.createSelectQuery(tableName, columns,
-                                            joins, conditions, orderBy))
-
-        return cursor.fetchone()
+    return cursor.fetchall()
 
 
-def insertValues(tableName, columns, values):
+def createSelectQuery(tableName, columns, joins, conditions, sort):
+    query = "SELECT "
 
-    if isOpen():
-        try:
-            cursor = db.connection.cursor()
-            cursor.execute(db.createInsertQuery(tableName, columns, values))
-            db.apply()
-            return True
-        except Exception as e:
-            print("Error:", e)
-            return False
-    return False
+    for column in columns:
+        query += column + ', '
 
+    query = query[0:len(query)-2]
+    query += " FROM " + tableName
 
-def updateValue(tableName, columns, values, IDCol, IDVal):
+    for join in joins:
+        query += " " + join
 
-    if isOpen():
-        try:
-            cursor = db.connection.cursor()
-            cursor.execute(db.createUpdateQuery(
-                tableName, columns, values, IDCol, IDVal))
-            db.apply()
-            return True
-        except Exception as e:
-            print("Error:", e)
-            return False
-    return False
+    if conditions != "":
+        query += " " + conditions
 
+    if sort != "":
+        query += " " + sort
 
-def deleteValue(tableName, condition):
-    if isOpen():
-        cursor = db.connection.cursor()
-        cursor.execute(db.createDeleteQuery(tableName, condition))
-        db.apply()
-
-########################################
-# Initial setup to create the database #
-########################################
-
-
-def createDatabase(appDataPath, node):
-    if openDatabase(appDataPath):
-        tables = getDatabaseTableNameFromJSON(node)
-
-        for table in tables:
-            cursor = db.connection.cursor()
-            cursor.execute(db.createTableQuery(
-                table["name"], getTableColumns(json.dumps(table)), getTablePrimaryKeys(json.dumps(table))))
-
-        db.apply()
-
-
-def getDatabaseTableNameFromJSON(root):
-    return json.loads(root)["tables"]
-
-
-def getTableColumns(root):
-    return json.loads(root)["columns"]
-
-
-def getTablePrimaryKeys(root):
-    return json.loads(root)["primarykey"]
+    query += ";"
+    print(query)
+    return query

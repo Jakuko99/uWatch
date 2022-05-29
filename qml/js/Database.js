@@ -10,18 +10,18 @@ function openDatabase() {
                       'firmwareVersion TEXT)');
         tx.executeSql('CREATE TABLE IF NOT EXISTS battery('+
                       'id INTEGER PRIMARY KEY, '+
-                      'mac TEXT, '+
                       'date TEXT, '+
+                      'mac TEXT, '+
                       'value INTEGER)');
         tx.executeSql('CREATE TABLE IF NOT EXISTS steps('+
                       'id INTEGER PRIMARY KEY, '+
-                      'mac TEXT, '+
                       'date TEXT, '+
+                      'mac TEXT, '+
                       'value INTEGER)');
         tx.executeSql('CREATE TABLE IF NOT EXISTS heartrate('+
                       'id INTEGER PRIMARY KEY, '+
-                      'mac TEXT, '+
                       'date TEXT, '+
+                      'mac TEXT, '+
                       'value INTEGER)');
     });
   } catch (err) {
@@ -86,6 +86,22 @@ function read(table, id)
   return result
 }
 
+function readByMAC(table, mac) {
+  var database = openDatabase();
+  var result = null;
+
+  try {
+    database.transaction(function (tx) {
+        result = tx.executeSql(
+                    'SELECT * FROM ' + table + ' WHERE mac == "' + mac + '";')
+    })
+  } catch (err) {
+      console.log("Error reading from database: " + err);
+  }
+
+  return result
+}
+
 //****************************************
 //**           Write functions          **
 //****************************************
@@ -93,12 +109,14 @@ function read(table, id)
 function createWatch(values) {
   var database = openDatabase();
 
-  try {
-    database.transaction(function (tx) {
-        tx.executeSql('INSERT INTO watches (mac, devicename, firmware,firmwareVersion) VALUES (?, ?, ?, ?)', values)
-    })
-  } catch (err) {
-      console.log("Error writing to database: " + err);
+  if(readByMAC("watches", values[0]).rows.length == 0) {
+    try {
+      database.transaction(function (tx) {
+          tx.executeSql('INSERT INTO watches (mac, devicename, firmware,firmwareVersion) VALUES (?, ?, ?, ?)', values)
+      })
+    } catch (err) {
+        console.log("Error writing to database: " + err);
+    }
   }
 }
 
@@ -107,7 +125,7 @@ function writeStats(table, values) {
 
   try {
     database.transaction(function (tx) {
-        tx.executeSql('INSERT INTO ' + table + ' (mac, date, value) VALUES (?, ?, ?)', values)
+        tx.executeSql('INSERT INTO ' + table + ' (date, mac, value) VALUES (?, ?, ?)', values)
     })
   } catch (err) {
       console.log("Error writing to database: " + err);

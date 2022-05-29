@@ -2,11 +2,7 @@ function listDevices() {
   let devices = DB.readAll("watches");
 
   for (var i = 0; i < devices.rows.length; i++) {
-    let id = devices.rows.item(i).id
-    let firmware = devices.rows.item(i).firmware
-    let mac = devices.rows.item(i).mac
-
-    welcomeListModel.append({deviceID: id, firmware: firmware, deviceMAC: mac});
+    welcomeListModel.append({deviceObject: devices.rows.item(i)});
   }
 }
 

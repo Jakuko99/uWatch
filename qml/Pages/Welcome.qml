@@ -26,6 +26,12 @@ Page {
         trailingActionBar {
            actions: [
             Action {
+              iconName: "info"
+              text: i18n.tr("About")
+
+              onTriggered: pageStack.push(Qt.resolvedUrl("About.qml"))
+            },
+            Action {
              iconName: "add"
              text: "Add device"
 
@@ -84,8 +90,6 @@ Page {
 
     ListModel {
         id: welcomeListModel
-
-        property int deviceID: -1
     }
 
     Component{
@@ -96,8 +100,8 @@ Page {
 
             ListItemLayout {
                 anchors.centerIn: parent
-                title.text: firmware
-                subtitle.text: deviceMAC
+                title.text: deviceObject.firmware
+                subtitle.text: deviceObject.mac
             }
 
             trailingActions: ListItemActions {
@@ -113,7 +117,7 @@ Page {
                 ]
             }
 
-            onClicked: pageStack.push(Qt.resolvedUrl("Device.qml"), {id: deviceID})
+            onClicked: pageStack.push(Qt.resolvedUrl("Device.qml"), {deviceObject: deviceObject})
         }
       }
 

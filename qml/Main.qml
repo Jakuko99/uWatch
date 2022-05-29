@@ -6,6 +6,7 @@ import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 import Qt.labs.platform 1.0
 import QtQuick.LocalStorage 2.0
+import Qt.labs.folderlistmodel 2.2
 import "Components"
 
 import "./js/Database.js" as DB
@@ -25,11 +26,16 @@ MainView {
     Settings {
         id: settings
 
+        readonly property int margin: units.gu(2)
+
         // Theme settings
-        property string accentColor: "#c74375"
+        readonly property string accentColor: "#c74375"
+        readonly property string cardColor: theme.name == "Ubuntu.Components.Themes.SuruDark" ? "#444444" : "#EAE9E7"
 
         // Backend Settings
         property bool initializeAtStart: true
+        property bool migrationRan: false
+        property bool databaseMigrated: false
     }
 
     PageStack {
@@ -52,5 +58,8 @@ MainView {
         }
     }
 
-    Component.onCompleted: DB.openDatabase();
+    Component.onCompleted: {
+      DB.openDatabase();
+      Helper.migrateDatabase(StandardPaths.writableLocation(StandardPaths.AppDataLocation));
+    }
 }

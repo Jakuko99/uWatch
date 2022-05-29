@@ -1,7 +1,28 @@
 import uGatt
 import uGattHelper as helper
+import DatabaseHelper as db
 from datetime import datetime, timedelta
 from distutils.version import StrictVersion
+
+############
+# Database #
+############
+
+
+def getDevices():
+    return db.getValues("watches", ["*"], [], "", "")
+
+
+def getBatteryLevels():
+    return db.getValues("battery", ["*"], [], "", "")
+
+
+def getHeartRate():
+    return db.getValues("heartrate", ["*"], [], "", "")
+
+
+def getSteps():
+    return db.getValues("steps", ["*"], [], "", "")
 
 #########
 # uGatt #
@@ -47,68 +68,30 @@ def getConnectionState(mac):
 ##################
 
 
-def syncTime(json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(json, firmware, "Current Time")
-
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
+def writeValue(mac, currentFirmwareVersion, validFirmwareVersion, identifier):
+    if compareVersions(currentFirmwareVersion, validFirmwareVersion):
         if uGatt.getBackend() == "bluetoothctl":
-            uGatt.write_value_uuid(helper.getUUID(
-                json, firmware, "Current Time"), helper.currentTimeToHex())
+            uGatt.write_value_uuid(identifier, helper.currentTimeToHex())
         else:
-            uGatt.write_handle(helper.getHandle(
-                json, firmware, "Current Time"), helper.currentTimeToHex())
+            uGatt.write_handle(identifier, helper.currentTimeToHex())
 
 
-def syncFirmware(json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(
-        json, firmware, "Software Revision String")
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
-        return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Software Revision String")), "big-endian")
-
-
-def syncFirmwareRevision(json, mac, firmware):
-    version = helper.parseToString(uGatt.read_value(helper.getUUID(
-        json, firmware, "Firmware Revision String")), "big-endian")
-
-    return version
-
-
-def syncBatteryLevel(mac, json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(json, firmware, "Battery Level")
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
-        batteryLevel = helper.parseToInt(uGatt.read_value(
-                helper.getUUID(json, firmware, "Battery Level")), "big-endian")
-        return batteryLevel
-
-
-def syncHeartRate(mac, json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(
-        json, firmware, "Heart Rate Measurement")
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
-        heartRate = helper.parseToInt(uGatt.read_value(
-                helper.getUUID(json, firmware, "Heart Rate Measurement")), "big-endian")
-        return heartRate
-
-
-def syncSteps(mac, json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(json, firmware, "Step count")
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
-        stepCount = helper.parseToInt(uGatt.read_value(
-                helper.getUUID(json, firmware, "Step count")), "little-endian")
-
-        return stepCount
-
-
-def syncHardwareRevision(json, firmware, firmwareVersion):
-    UUIDValidVersion = helper.getValidVersion(
-        json, firmware, "Hardware Revision String")
-    if StrictVersion(firmwareVersion) >= StrictVersion(UUIDValidVersion):
-        return helper.parseToString(uGatt.read_value(helper.getUUID(json, firmware, "Hardware Revision String")), "big-endian")
+def readValue(mac, currentFirmwareVersion, validFirmwareVersion, uuid, interpreter):
+    if compareVersions(currentFirmwareVersion, validFirmwareVersion):
+        val = helper.parseToInt(uGatt.read_value(uuid), interpreter)
+        return val
 
 
 ########
 # Misc #
 ########
+
+def compareVersions(currentFirmwareVersion, validFirmwareVersion):
+    if StrictVersion(currentFirmwareVersion) >= StrictVersion(validFirmwareVersion):
+        return True
+    else:
+        return False
+
 
 def getShortISODateArray(max):
     dateArray = []
