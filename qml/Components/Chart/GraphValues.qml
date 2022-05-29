@@ -17,6 +17,6 @@ Rectangle {
     height: rectangleHeight
     width: parent.width/3
 
-    color: root.accentColor
+    color: settings.accentColor
   }
 }
