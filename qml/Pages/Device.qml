@@ -4,17 +4,22 @@ import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import "../Components"
+import "../Components/Chart"
+import "../Components/Stats"
 
-import "Chart"
-import "Stats"
+import "../js/Database.js" as DB
 
 Page {
     id: deviceView
     anchors.fill: parent
 
-    // Device specific variables
     property string json: "{}"
-    property string deviceMAC: ""
+
+    // Device specific variables
+    property int id: -1
+    property string name: ""
+    property string mac: ""
     property string firmware: ""
     property string firmwareVersion: ""
 
@@ -25,7 +30,7 @@ Page {
 
     header: BaseHeader{
         id: deviceViewHeader
-        title: i18n.tr('uWatch')
+        title: firmware
 
         trailingActionBar {
            actions: [
@@ -33,7 +38,7 @@ Page {
              iconName: "settings"
              text: i18n.tr("Settings")
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("PageSettings.qml"))
+             onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
             },
             Action {
               iconName: "sync"
@@ -145,13 +150,6 @@ Page {
         }
 
         Label {
-          id: lblDeviceName
-
-          text: firmware
-          textSize: Label.Large
-        }
-
-        Label {
           id: lblFirmware
 
           text: i18n.tr("Firmware") + ": " + firmwareVersion
@@ -161,7 +159,7 @@ Page {
         Label {
           id: lblHardware
 
-          text: i18n.tr("MAC") + ": " + deviceMAC
+          text: i18n.tr("MAC") + ": " + mac
           textSize: Label.Small
         }
 
@@ -299,6 +297,11 @@ Page {
   }
 
   Component.onCompleted: {
+    let device = DB.read("watches", id);
+    console.log(device);
+    mac = device.rows.item(0).mac
+    firmware = device.rows.item(0).firmware
+    firmwareVersion = device.rows.item(0).firmwareVersion
     updateView();
   }
 
@@ -399,7 +402,7 @@ Page {
 
   function updateFirmwareRevision() {
     python.call('uwatch.syncFirmwareRevision', [root.devices, deviceMAC, firmware], function(version) {
-      
+
     })
   }
 }
