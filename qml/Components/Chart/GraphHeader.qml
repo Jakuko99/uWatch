@@ -31,6 +31,6 @@ Rectangle {
     iconName: "go-next"
     color: "transparent"
 
-    onClicked: pageStack.push(Qt.resolvedUrl("../../Pages/StatDetails.qml"), {page: page, deviceMAC: deviceObject.mac})
+    onClicked: pageStack.push(Qt.resolvedUrl("../../Pages/StatDetails.qml"), {page: page, deviceObject})
   }
 }

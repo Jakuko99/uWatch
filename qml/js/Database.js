@@ -60,13 +60,17 @@ function readLastRow(table) {
   try {
     database.transaction(function (tx) {
         result = tx.executeSql(
-                    'SELECT * FROM ? ORDER BY id DESC LIMIT 1', [table])
+                    'SELECT * FROM ' + table + ' ORDER BY id DESC LIMIT 1;');
     })
   } catch (err) {
       console.log("Error reading from database: " + err);
   }
 
-  return result.rows.item(0).id;
+  if(result.rows.item(0) == null) {
+      return "0";
+  } else {
+      return result.rows.item(0).value;
+  }
 }
 
 function read(table, id)
@@ -100,6 +104,42 @@ function readByMAC(table, mac) {
   }
 
   return result
+}
+
+function readByDate(table, mac, date) {
+  var database = openDatabase();
+  var result = null;
+
+  try {
+    database.transaction(function (tx) {
+        result = tx.executeSql(
+                    'SELECT * FROM ' + table + ' WHERE mac == "' + mac + '" AND date LIKE "' + date + '%";');
+    })
+  } catch (err) {
+      console.log("Error reading from database: " + err);
+  }
+
+  return result.rows;
+}
+
+function readLastByDate(table, mac, date) {
+  var database = openDatabase();
+  var result = null;
+
+  try {
+    database.transaction(function (tx) {
+        result = tx.executeSql(
+                    'SELECT * FROM ' + table + ' WHERE mac == "' + mac + '" AND date LIKE "' + date + '%" ORDER BY id DESC LIMIT 1;');
+    })
+  } catch (err) {
+      console.log("Error reading from database: " + err);
+  }
+
+  if(result.rows.item(0) == null) {
+      return "0";
+  } else {
+      return result.rows.item(0).value;
+  }
 }
 
 //****************************************

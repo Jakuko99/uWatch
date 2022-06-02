@@ -2,10 +2,11 @@ import QtQuick 2.9
 import Ubuntu.Components 1.3
 
 Rectangle {
-  property int max: 100
+  property int max: 0
 
   anchors {
     left: parent.left
+    top: graphHeader.bottom
   }
 
   width: units.gu(6)

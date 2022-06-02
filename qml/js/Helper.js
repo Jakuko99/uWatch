@@ -63,3 +63,55 @@ function migrateTable(table, data) {
     DB.writeStats(table, data);
   }
 }
+
+function getWeek(format) {
+  let result = [];
+
+  Date.prototype.formatYYYYMMDD = function(){
+    return this.getFullYear() +
+    "-" + (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
+  }
+
+  Date.prototype.formatMMDD = function(){
+    return (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
+  }
+
+  for(let i = 0; i < 7; i++) {
+    let date = new Date();
+    date.setDate(date.getDate() - i);
+
+    //result.push(date.getMonth()+1 + "-" + date.getDate())
+    if(format == "long") {
+      result.push(date.formatYYYYMMDD());
+    } else if (format == "short") {
+      result.push(date.formatMMDD())
+    }
+  }
+
+  return result.reverse();
+}
+
+function getToday() {
+  Date.prototype.formatYYYYMMDD = function(){
+    return this.getFullYear() +
+    "-" + (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
+  }
+
+  return new Date().formatYYYYMMDD();
+}
+
+function getMaxValue(values) {
+  let max = null;
+  for(let i = 0; i < values.length; i++) {
+    if(max == null) {
+      max = values[i];
+    } else if(max < values [i]) {
+      max = values[i]
+    }
+  }
+
+  return max;
+}

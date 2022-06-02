@@ -4,6 +4,10 @@ import Ubuntu.Components 1.3
 Rectangle {
   property int rectangleHeight: units.gu(5)
 
+  anchors {
+    bottom: parent.bottom
+  }
+
   height: parent.height
   width: parent.width/7
 
