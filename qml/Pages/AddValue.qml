@@ -7,6 +7,7 @@ import Ubuntu.Components.Pickers 1.3
 import Ubuntu.Components.Themes 1.3
 
 import "../Components"
+import "../js/Database.js" as DB
 
 Page {
     id: pageAddValue
@@ -143,28 +144,11 @@ Page {
     }
 
     function addValue(d, t, val) {
-      let action = ""
-      switch(page) {
-        case "Heart rate":
-          action = "insertHeartRate";
-          break;
-        case "Steps":
-          action = "insertSteps";
-          break;
-        default:
-          action = "none";
-          break;
-      }
+      let newDate = new Date(d.split("-")[0], d.split("-")[1]-1, d.split("-")[2], t.split(":")[0], t.split(":")[1], t.split(":")[2]);
 
-      let random = Math.floor(Math.random() * 10000) + 1000;
+      DB.writeStats(page.replace(" ", "").toLowerCase(), [newDate.toISOString(), deviceObject.mac, val])
+      statDetailsListModel.append({value: val, date: newDate.toLocaleString(), fullDate: newDate.toISOString()});
 
-      if (action != "none") {
-        python.call('uwatch.' + action, [deviceMAC, d + "T" + t + "." + random, val], function(result) {
-
-        })
-
-        statDetailsListModel.append({value: val, date: d + " " + t, fullDate: d + "T" + t + "." + random});
-      }
       pageStatBottomEdge.collapse();
     }
 }
