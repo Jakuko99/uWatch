@@ -13,7 +13,7 @@ import "../js/Database.js" as DB
 Page {
     id: pageStatDetails
 
-    property string deviceMAC: ""
+    property var deviceObject: null
     property string page: ""
 
     property string selectedFullDate: ""
@@ -163,14 +163,6 @@ Page {
         //let time = values[2].split("T")[1].split(".")[0]
         statDetailsListModel.append({value: row.value, date: date, fullDate: row.date});
       }
-
-      //python.call('uwatch.' + action, [deviceMAC], function(result) {
-      //  result.forEach((el, i) => {
-      //    let date = el[1].split("T")[0]
-      //    let time = el[1].split("T")[1].split(".")[0]
-      //    statDetailsListModel.append({value: el[0], date: date + " " + time, fullDate: el[1]});
-      //  })
-      //});
     }
 
     function deleteValue(date) {
@@ -187,7 +179,7 @@ Page {
           break;
       }
 
-      python.call('uwatch.deleteValues', [table, deviceMAC, date], function(result) {
+      python.call('uwatch.deleteValues', [table, deviceObject.mac, date], function(result) {
 
       });
       statDetailsListModel.remove(selectedIndex);
