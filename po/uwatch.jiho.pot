@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-29 22:39+0000\n"
+"POT-Creation-Date: 2022-06-02 23:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,32 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Pages/About.qml:29 ../qml/Pages/Welcome.qml:30
-msgid "About"
-msgstr ""
-
-#: ../qml/Pages/About.qml:100
-msgid "Version"
-msgstr ""
-
-#: ../qml/Pages/About.qml:144
-msgid "Developer"
-msgstr ""
-
-#: ../qml/Pages/About.qml:190
-msgid "License"
-msgstr ""
-
-#: ../qml/Pages/About.qml:262
-msgid "Help translate the app"
-msgstr ""
-
 #: ../qml/Pages/AddDevice.qml:22
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:28 ../qml/Pages/Device.qml:45
-#: ../qml/Pages/Settings.qml:62
+#: ../qml/Pages/AddDevice.qml:28 ../qml/Pages/Device.qml:47
+#: ../qml/Pages/Settings.qml:45
 msgid "Sync"
 msgstr ""
 
@@ -82,39 +62,39 @@ msgstr ""
 msgid "Device could not be paired."
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:16 ../qml/Pages/StatDetails.qml:111
+#: ../qml/Pages/AddValue.qml:17 ../qml/Pages/StatDetails.qml:111
 msgid "Add value"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:57
+#: ../qml/Pages/AddValue.qml:58
 msgid "Date"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:82
+#: ../qml/Pages/AddValue.qml:83
 msgid "Time"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:128
+#: ../qml/Pages/AddValue.qml:129
 msgid "Add"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:138 ../qml/Pages/Welcome.qml:142
+#: ../qml/Pages/AddValue.qml:139 ../qml/Pages/Welcome.qml:142
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:39 ../qml/Pages/Settings.qml:16
+#: ../qml/Pages/Device.qml:41 ../qml/Pages/Settings.qml:14
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:162
+#: ../qml/Pages/Device.qml:158
 msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:207
+#: ../qml/Pages/Device.qml:170
 msgid "Steps"
 msgstr ""
 
-#: ../qml/Pages/Settings.qml:76
+#: ../qml/Pages/Settings.qml:61
 msgid "Sync watch after it connected"
 msgstr ""
 
@@ -132,6 +112,10 @@ msgstr ""
 
 #: ../qml/Pages/StatDetails.qml:122
 msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+#: ../qml/Pages/Welcome.qml:30
+msgid "About"
 msgstr ""
 
 #: ../qml/Pages/Welcome.qml:69
