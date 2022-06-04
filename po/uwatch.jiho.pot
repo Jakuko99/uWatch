@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-04 14:37+0000\n"
+"POT-Creation-Date: 2022-06-04 14:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Device could not be paired."
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:17 ../qml/Pages/StatDetails.qml:112
+#: ../qml/Pages/AddValue.qml:17 ../qml/Pages/StatDetails.qml:111
 msgid "Add value"
 msgstr ""
 
@@ -78,8 +78,8 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:139 ../qml/Pages/StatDetails.qml:136
-#: ../qml/Pages/Welcome.qml:142
+#: ../qml/Pages/AddValue.qml:139 ../qml/Pages/StatDetails.qml:135
+#: ../qml/Pages/Welcome.qml:144
 msgid "Cancel"
 msgstr ""
 
@@ -99,43 +99,43 @@ msgstr ""
 msgid "Sync watch after it connected"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:59
+#: ../qml/Pages/StatDetails.qml:58
 msgid "No stats to display!"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:71
+#: ../qml/Pages/StatDetails.qml:70
 msgid "Try to add some by swiping up from the bottom edge"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:122
+#: ../qml/Pages/StatDetails.qml:121
 msgid "Delete entry"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:123
+#: ../qml/Pages/StatDetails.qml:122
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:126 ../qml/Pages/Welcome.qml:132
+#: ../qml/Pages/StatDetails.qml:125 ../qml/Pages/Welcome.qml:134
 msgid "Delete"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:30
+#: ../qml/Pages/Welcome.qml:31
 msgid "About"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:69
+#: ../qml/Pages/Welcome.qml:70
 msgid "No watches yet!"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:81
+#: ../qml/Pages/Welcome.qml:82
 msgid "To start, just click on '+' in the top bar"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:128
+#: ../qml/Pages/Welcome.qml:130
 msgid "Delete device"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:129
+#: ../qml/Pages/Welcome.qml:131
 msgid "Are you sure you want to delete this device?"
 msgstr ""
 

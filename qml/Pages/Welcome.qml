@@ -16,6 +16,7 @@ Page {
     anchors.fill: parent
 
     property string selectedDevice: ""
+    property string selectedMac: ""
     property int selectedIndex: -1
 
     header: BaseHeader {
@@ -110,6 +111,7 @@ Page {
                         iconName: "delete"
 
                         onTriggered: {
+                          selectedMac = deviceObject.mac
                           selectedIndex = index
                           PopupUtils.open(deleteDeviceDialogComponent)
                         }
@@ -134,7 +136,7 @@ Page {
 
               onClicked: {
                 PopupUtils.close(deleteDeviceDialog)
-                Devices.deleteDevice(selectedIndex);
+                Devices.deleteDevice(selectedIndex, selectedMac);
               }
           }
 

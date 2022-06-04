@@ -6,11 +6,10 @@ function listDevices() {
   }
 }
 
-function deleteDevice(index) {
-  console.log(index);
+function deleteDevice(index, mac) {
   //python.call('uwatch.unpairDevice', [id], function(result) {
     //if(result == true) {
-      DB.deleteByID("watches", ++index);
+      DB.deleteByMAC("watches", mac);
       welcomeListModel.remove(index)
     //}
   //})
