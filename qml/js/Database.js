@@ -193,7 +193,7 @@ function deleteByMAC(table, mac) {
 
   try {
     database.transaction(function (tx) {
-        tx.executeSql('DELETE FROM ? WHERE mac == ?;', [table, mac])
+        tx.executeSql('DELETE FROM ' + table + ' WHERE mac == "' + mac + '";')
     })
   } catch (err) {
       console.log("Error writing to database: " + err);
