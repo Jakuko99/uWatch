@@ -5,6 +5,7 @@ import Ubuntu.Components.Popups 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import QtBluetooth 5.9
 import "../Components"
 import "../js/Devices.js" as Devices
 
@@ -20,21 +21,6 @@ Page {
     header: BaseHeader {
         id: addDeviceViewHeader
         title: i18n.tr('Add device')
-
-        trailingActionBar {
-           actions: [
-            Action {
-              iconName: "sync"
-              text: i18n.tr("Sync")
-
-              onTriggered: Devices.scanDevices();
-            }
-          ]
-        }
-    }
-
-    ListModel {
-        id: listModel
     }
 
     ScrollView {
@@ -49,7 +35,7 @@ Page {
         ListView {
             id: devicesListView
             anchors.fill: parent
-            model: listModel
+            model: btModel
             delegate: devicesDelegate
             focus: true
 
@@ -62,7 +48,11 @@ Page {
         }
     }
 
-    Component.onCompleted: Devices.scanDevices();
+    BluetoothDiscoveryModel {
+      id: btModel
+      running: true
+      discoveryMode: BluetoothDiscoveryModel.DeviceDiscovery
+    }
 
     Component{
         id:devicesDelegate
@@ -71,15 +61,15 @@ Page {
             id: deviceItemDelegate
 
             onClicked: {
-              selectedFirmware = firmware
-              selectedMAC = deviceMAC
+              selectedFirmware = qsTr(deviceName)
+              selectedMAC = qsTr(remoteAddress)
               PopupUtils.open(pairDialogComponent)
             }
 
             ListItemLayout {
                 anchors.centerIn: parent
-                title.text: firmware
-                subtitle.text: deviceMAC
+                title.text: qsTr(deviceName)
+                subtitle.text: qsTr(remoteAddress)
             }
         }
     }
