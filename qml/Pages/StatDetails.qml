@@ -16,8 +16,8 @@ Page {
     property var deviceObject: null
     property string page: ""
 
-    property string selectedFullDate: ""
     property int selectedIndex: -1
+    property int itemID: -1
 
     header: BaseHeader {
         id: pageStatDetailsHeader
@@ -94,7 +94,7 @@ Page {
 
                         onTriggered: {
                           selectedIndex = index
-                          selectedFullDate = fullDate
+                          itemID = id;
                           PopupUtils.open(deleteValueDialogComponent)
                         }
                     }
@@ -122,17 +122,17 @@ Page {
         text: i18n.tr("Are you sure you want to delete this entry?")
 
         Button {
-            text: "Delete"
+            text: i18n.tr("Delete")
             color: theme.palette.normal.negative
 
             onClicked: {
               PopupUtils.close(deleteValueDialog)
-              deleteValue(selectedFullDate)
+              deleteValue()
             }
         }
 
         Button {
-            text: "Cancel"
+            text: i18n.tr("Cancel")
 
             onClicked: {
               PopupUtils.close(deleteValueDialog)
@@ -159,13 +159,13 @@ Page {
 
       for(let i = 0; i < values.rows.length; i++) {
         let row = values.rows.item(i);
-        let date = new Date(Date.parse(row.date)).toUTCString();//values[2].split("T")[0]
-        //let time = values[2].split("T")[1].split(".")[0]
-        statDetailsListModel.append({value: row.value, date: date, fullDate: row.date});
+        let date = new Date(Date.parse(row.date)).toLocaleString();//values[2].split("T")[0]
+
+        statDetailsListModel.append({id: row.id, value: row.value, date: date, fullDate: row.date});
       }
     }
 
-    function deleteValue(date) {
+    function deleteValue() {
       let table = ""
       switch(page) {
         case "Heart rate":
@@ -179,9 +179,7 @@ Page {
           break;
       }
 
-      python.call('uwatch.deleteValues', [table, deviceObject.mac, date], function(result) {
-
-      });
+      DB.deleteByID(table, itemID);
       statDetailsListModel.remove(selectedIndex);
     }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-02 23:08+0000\n"
+"POT-Creation-Date: 2022-06-04 14:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Device could not be paired."
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:17 ../qml/Pages/StatDetails.qml:111
+#: ../qml/Pages/AddValue.qml:17 ../qml/Pages/StatDetails.qml:112
 msgid "Add value"
 msgstr ""
 
@@ -78,7 +78,8 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../qml/Pages/AddValue.qml:139 ../qml/Pages/Welcome.qml:142
+#: ../qml/Pages/AddValue.qml:139 ../qml/Pages/StatDetails.qml:136
+#: ../qml/Pages/Welcome.qml:142
 msgid "Cancel"
 msgstr ""
 
@@ -98,20 +99,24 @@ msgstr ""
 msgid "Sync watch after it connected"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:58
+#: ../qml/Pages/StatDetails.qml:59
 msgid "No stats to display!"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:70
+#: ../qml/Pages/StatDetails.qml:71
 msgid "Try to add some by swiping up from the bottom edge"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:121
+#: ../qml/Pages/StatDetails.qml:122
 msgid "Delete entry"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:122
+#: ../qml/Pages/StatDetails.qml:123
 msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+#: ../qml/Pages/StatDetails.qml:126 ../qml/Pages/Welcome.qml:132
+msgid "Delete"
 msgstr ""
 
 #: ../qml/Pages/Welcome.qml:30
@@ -132,10 +137,6 @@ msgstr ""
 
 #: ../qml/Pages/Welcome.qml:129
 msgid "Are you sure you want to delete this device?"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:132
-msgid "Delete"
 msgstr ""
 
 #: ../qml/js/Devices.js:26
