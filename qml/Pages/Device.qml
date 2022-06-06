@@ -178,17 +178,27 @@ Page {
   }
 
   Component.onCompleted: {
+    if(deviceObject.firmwareVersion == null) {
+      python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
+        if(connected) {
+          Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
+          deviceObject.firmwareVersion = DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion;
+        }
+      })
+    }
+
     updateView();
   }
 
   function syncData() {
     let gattobject = GATT.getGATTObject(deviceObject.firmware);
+    let timeObject = GATT.getUUIDObject(gattobject, "Current Time");
     let firmwareObject = GATT.getUUIDObject(gattobject, "Firmware Revision String");
-    let batteryObject = GATT.getUUIDObject(gattObject, "Battery Level");
-    let heartrateObject = GATT.getUUIDObject(gattObject, "Heart Rate Measurement");
-    let stepsObject = GATT.getUUIDObject(gattObject, "Step count");
+    let batteryObject = GATT.getUUIDObject(gattobject, "Battery Level");
+    let heartrateObject = GATT.getUUIDObject(gattobject, "Heart Rate Measurement");
+    let stepsObject = GATT.getUUIDObject(gattobject, "Step count");
 
-    python.call('uwatch.writeValue', [root.devices, firmware, firmwareVersion], function() {})
+    python.call('uwatch.writeValue', [deviceObject.mac, deviceObject.firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.Handle], function() {})
     python.call('uwatch.readValue', [deviceObject.mac,
      deviceObject.firmwareVersion,
      firmwareObject.ValidSinceFirmware,
