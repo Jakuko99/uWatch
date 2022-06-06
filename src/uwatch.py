@@ -76,9 +76,12 @@ def writeValue(mac, currentFirmwareVersion, validFirmwareVersion, identifier):
             uGatt.write_handle(identifier, helper.currentTimeToHex())
 
 
-def readValue(mac, currentFirmwareVersion, validFirmwareVersion, uuid, interpreter):
+def readValue(mac, currentFirmwareVersion, validFirmwareVersion, uuid, interpreter, type):
     if compareVersions(currentFirmwareVersion, validFirmwareVersion):
-        val = helper.parseToInt(uGatt.read_value(uuid), interpreter)
+        if type == "int":
+            val = helper.parseToInt(uGatt.read_value(uuid), interpreter)
+        else:
+            val = helper.parseToString(uGatt.read_value(uuid), interpreter)
         return val
 
 
