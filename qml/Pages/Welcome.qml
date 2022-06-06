@@ -36,7 +36,7 @@ Page {
              iconName: "add"
              text: "Add device"
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("AddDevice.qml"), {watchesObject: welcomeListModel})
+             onTriggered: pageStack.push(Qt.resolvedUrl("AddDevice.qml"), {listModel: welcomeListModel})
             }
           ]
         }

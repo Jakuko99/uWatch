@@ -7,10 +7,13 @@ import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 import QtBluetooth 5.9
 import "../Components"
+import "../js/Database.js" as DB
 import "../js/Devices.js" as Devices
 
 Page {
     id: addDeviceView
+
+    property var listModel: null
 
     property string selectedFirmware: ""
     property string selectedMAC: ""
@@ -43,7 +46,7 @@ Page {
                 id: scanLabel
                 anchors.centerIn: parent
                 text: i18n.tr("Scanning...")
-                visible: devicesListView.count === 0 && !listModel.loading
+                visible: devicesListView.count === 0
             }
         }
     }
@@ -110,9 +113,7 @@ Page {
           python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
             PopupUtils.close(attemptPairDialog)
             if(result) {
-              python.call('uwatch.addDevice', [addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""], function(result) {
-
-              })
+              DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
               PopupUtils.open(pairSuccessfulDialogComponent)
             } else {
               PopupUtils.open(pairUnsuccessfulDialogComponent)
@@ -134,9 +135,10 @@ Page {
 
             onClicked: {
               PopupUtils.close(pairSuccessfulDialog)
+
+              let newWatch = DB.readByMAC("watches", addDeviceView.selectedMAC);
+              listModel.append({deviceObject: newWatch.rows.item(0)})
               pageStack.pop()
-              pageStack.pop()
-              pageStack.push(Qt.resolvedUrl("./PageWelcome.qml"), {newFirmware: addDeviceView.selectedFirmware, newMAC: addDeviceView.selectedMAC})
             }
         }
       }
