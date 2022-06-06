@@ -19,7 +19,7 @@ Rectangle {
 
     text: title
     textSize: Label.Large
-    color: settings.accentColor
+    color: root.accentColor
   }
 
   Button {
