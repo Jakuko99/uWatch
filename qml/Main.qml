@@ -61,5 +61,10 @@ MainView {
     Component.onCompleted: {
       DB.openDatabase();
       Helper.migrateDatabase(StandardPaths.writableLocation(StandardPaths.AppDataLocation));
+
+      // Init uGatt
+      python.call('uwatch.initialize', [], function(result) {
+        
+      })
     }
 }
