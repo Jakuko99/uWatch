@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-26 23:02+0000\n"
+"POT-Creation-Date: 2021-08-16 21:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,135 +17,144 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Pages/AddDevice.qml:22
-msgid "Add device"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:28 ../qml/Pages/Device.qml:45
-#: ../qml/Pages/Settings.qml:45
-msgid "Sync"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:59 ../qml/js/Devices.js:25
-msgid "Scanning..."
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:92
-msgid "Pair"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:93
-msgid "Are you sure you want to pair with"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:116
-msgid "Pair device"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:117
-msgid "Attempting to pair with"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:139
-msgid "Pair successful"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:140
-msgid "Device was successfully paired."
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:159
-msgid "Pair unsuccessful"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:160
-msgid "Device could not be paired."
-msgstr ""
-
-#: ../qml/Pages/AddValue.qml:14 ../qml/Pages/StatDetails.qml:108
-msgid "Add value"
-msgstr ""
-
-#: ../qml/Pages/AddValue.qml:55
-msgid "Date"
-msgstr ""
-
-#: ../qml/Pages/AddValue.qml:80
-msgid "Time"
-msgstr ""
-
-#: ../qml/Pages/AddValue.qml:126
-msgid "Add"
-msgstr ""
-
-#: ../qml/Pages/AddValue.qml:136 ../qml/Pages/Welcome.qml:138
-msgid "Cancel"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:39 ../qml/Pages/Settings.qml:14
-msgid "Settings"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:155
-msgid "Firmware"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:162
-msgid "MAC"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:175
-msgid "Heart rate (Highest)"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:220
-msgid "Steps"
-msgstr ""
-
-#: ../qml/Pages/Settings.qml:61
-msgid "Sync watch after it connected"
-msgstr ""
-
-#: ../qml/Pages/StatDetails.qml:55
-msgid "No stats to display!"
-msgstr ""
-
-#: ../qml/Pages/StatDetails.qml:67
-msgid "Try to add some by swiping up from the bottom edge"
-msgstr ""
-
-#: ../qml/Pages/StatDetails.qml:118
-msgid "Delete entry"
-msgstr ""
-
-#: ../qml/Pages/StatDetails.qml:119
-msgid "Are you sure you want to delete this entry?"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:63
-msgid "No watches yet!"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:75
-msgid "To start, just click on '+' in the top bar"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:124
-msgid "Delete device"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:125
-msgid "Are you sure you want to delete this device?"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:128
-msgid "Delete"
-msgstr ""
-
-#: ../qml/js/Devices.js:30
+#: ../qml/Components/PageAddDevice.qml:23
 msgid "Could not find any devices."
 msgstr ""
 
-#: uWatch.desktop.in.h:1
+#: ../qml/Components/PageAddDevice.qml:30
+msgid "Add device"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:36 ../qml/Components/PageDevice.qml:40
+#: ../qml/Components/PageSettings.qml:45
+msgid "Sync"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:69
+msgid "Scanning for devices"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:100
+msgid "Pair"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:101
+msgid "Are you sure you want to pair with"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:124
+msgid "Pair device"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:125
+msgid "Attempting to pair with"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:147
+msgid "Pair successful"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:148
+msgid "Device was successfully paired."
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:167
+msgid "Pair unsuccessful"
+msgstr ""
+
+#: ../qml/Components/PageAddDevice.qml:168
+msgid "Device could not be paired."
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:14
+#: ../qml/Components/PageStatDetails.qml:106
+msgid "Add value"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:55
+msgid "Date"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:80
+msgid "Time"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:126
+msgid "Add"
+msgstr ""
+
+#: ../qml/Components/PageAddValue.qml:136
+msgid "Cancel"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:28 uWatch.desktop.in.h:1
 msgid "uWatch"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:34 ../qml/Components/PageSettings.qml:14
+msgid "Settings"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:152
+msgid "Firmware"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:159
+msgid "MAC"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:172
+msgid "Heart rate (Highest)"
+msgstr ""
+
+#: ../qml/Components/PageDevice.qml:217
+msgid "Steps"
+msgstr ""
+
+#: ../qml/Components/PageSettings.qml:61
+msgid "Sync watch after it connected"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:54
+msgid "No stats to display!"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:66
+msgid "Try to add some by swiping up from the bottom edge"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:116
+msgid "Delete entry"
+msgstr ""
+
+#: ../qml/Components/PageStatDetails.qml:117
+msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:23
+msgid "Start"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:66
+msgid "No watches yet!"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:78
+msgid "To start, just click on '+' in the top bar"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:120
+msgid "Delete device"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:121
+msgid "Are you sure you want to delete this device?"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:147
+msgid "Deleting device"
+msgstr ""
+
+#: ../qml/Components/PageWelcome.qml:148
+msgid "Trying to delete the device "
 msgstr ""
