@@ -5,17 +5,25 @@ import Ubuntu.Components.Popups 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
-import "../Components"
-import "../js/Devices.js" as Devices
 
 Page {
     id: addDeviceView
 
     property string selectedFirmware: ""
     property string selectedMAC: ""
-    property var watchesObject: null
 
     anchors.fill: parent
+
+    function scanDevices() {
+      listModel.clear()
+      python.call('uwatch.add_device', [root.devices], function(devices) {
+        if(devices.length > 0) {
+          devices.forEach((el, i) => listModel.append({firmware: el[1], deviceMAC: el[0]}));
+        } else {
+          scanLabel.text = i18n.tr("Could not find any devices.")
+        }
+      })
+    }
 
     header: BaseHeader {
         id: addDeviceViewHeader
@@ -27,11 +35,13 @@ Page {
               iconName: "sync"
               text: i18n.tr("Sync")
 
-              onTriggered: Devices.scanDevices();
+              onTriggered: scanDevices()
             }
           ]
         }
     }
+
+    Component.onCompleted: scanDevices()
 
     ListModel {
         id: listModel
@@ -56,13 +66,11 @@ Page {
             Label {
                 id: scanLabel
                 anchors.centerIn: parent
-                text: i18n.tr("Scanning...")
+                text: i18n.tr("Scanning for devices")
                 visible: devicesListView.count === 0 && !listModel.loading
             }
         }
     }
-
-    Component.onCompleted: Devices.scanDevices();
 
     Component{
         id:devicesDelegate

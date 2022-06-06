@@ -4,22 +4,17 @@ import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
-import "../Components"
-import "../Components/Chart"
-import "../Components/Stats"
 
-import "../js/Database.js" as DB
+import "Chart"
+import "Stats"
 
 Page {
     id: deviceView
     anchors.fill: parent
 
-    property string json: "{}"
-
     // Device specific variables
-    property int id: -1
-    property string name: ""
-    property string mac: ""
+    property string json: "{}"
+    property string deviceMAC: ""
     property string firmware: ""
     property string firmwareVersion: ""
 
@@ -30,7 +25,7 @@ Page {
 
     header: BaseHeader{
         id: deviceViewHeader
-        title: firmware
+        title: i18n.tr('uWatch')
 
         trailingActionBar {
            actions: [
@@ -38,7 +33,7 @@ Page {
              iconName: "settings"
              text: i18n.tr("Settings")
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
+             onTriggered: pageStack.push(Qt.resolvedUrl("PageSettings.qml"))
             },
             Action {
               iconName: "sync"
@@ -150,6 +145,13 @@ Page {
         }
 
         Label {
+          id: lblDeviceName
+
+          text: firmware
+          textSize: Label.Large
+        }
+
+        Label {
           id: lblFirmware
 
           text: i18n.tr("Firmware") + ": " + firmwareVersion
@@ -159,7 +161,7 @@ Page {
         Label {
           id: lblHardware
 
-          text: i18n.tr("MAC") + ": " + mac
+          text: i18n.tr("MAC") + ": " + deviceMAC
           textSize: Label.Small
         }
 
@@ -297,11 +299,6 @@ Page {
   }
 
   Component.onCompleted: {
-    let device = DB.read("watches", id);
-    console.log(device);
-    mac = device.rows.item(0).mac
-    firmware = device.rows.item(0).firmware
-    firmwareVersion = device.rows.item(0).firmwareVersion
     updateView();
   }
 
@@ -402,7 +399,7 @@ Page {
 
   function updateFirmwareRevision() {
     python.call('uwatch.syncFirmwareRevision', [root.devices, deviceMAC, firmware], function(version) {
-
+      
     })
   }
 }

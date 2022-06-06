@@ -40,7 +40,7 @@ Page {
           rightMargin: units.gu(2)
         }
 
-        color: settings.accentColor
+        color: root.accentColor
 
         text: i18n.tr('Sync')
         textSize: Label.Large
