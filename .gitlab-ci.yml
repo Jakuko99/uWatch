@@ -3,7 +3,7 @@ build:
   except:
     - tags
   script:
-    - clickable chain clean build --skip-review
+    - clickable chain clean build
   artifacts:
     paths:
       - build/*/app/*.click
