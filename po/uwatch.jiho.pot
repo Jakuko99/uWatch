@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-04 14:45+0000\n"
+"POT-Creation-Date: 2022-06-05 12:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,48 +17,43 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Pages/AddDevice.qml:22
+#: ../qml/Pages/AddDevice.qml:23
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:28 ../qml/Pages/Device.qml:47
-#: ../qml/Pages/Settings.qml:45
-msgid "Sync"
-msgstr ""
-
-#: ../qml/Pages/AddDevice.qml:59 ../qml/js/Devices.js:21
+#: ../qml/Pages/AddDevice.qml:45 ../qml/js/Devices.js:20
 msgid "Scanning..."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:92
+#: ../qml/Pages/AddDevice.qml:82
 msgid "Pair"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:93
+#: ../qml/Pages/AddDevice.qml:83
 msgid "Are you sure you want to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:116
+#: ../qml/Pages/AddDevice.qml:106
 msgid "Pair device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:117
+#: ../qml/Pages/AddDevice.qml:107
 msgid "Attempting to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:139
+#: ../qml/Pages/AddDevice.qml:129
 msgid "Pair successful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:140
+#: ../qml/Pages/AddDevice.qml:130
 msgid "Device was successfully paired."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:159
+#: ../qml/Pages/AddDevice.qml:149
 msgid "Pair unsuccessful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:160
+#: ../qml/Pages/AddDevice.qml:150
 msgid "Device could not be paired."
 msgstr ""
 
@@ -87,11 +82,15 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:158
+#: ../qml/Pages/Device.qml:47 ../qml/Pages/Settings.qml:45
+msgid "Sync"
+msgstr ""
+
+#: ../qml/Pages/Device.qml:160
 msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:170
+#: ../qml/Pages/Device.qml:172
 msgid "Steps"
 msgstr ""
 
@@ -139,7 +138,7 @@ msgstr ""
 msgid "Are you sure you want to delete this device?"
 msgstr ""
 
-#: ../qml/js/Devices.js:26
+#: ../qml/js/Devices.js:25
 msgid "Could not find any devices."
 msgstr ""
 
