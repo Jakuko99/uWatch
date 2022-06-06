@@ -3,7 +3,7 @@ build:
   except:
     - tags
   script:
-    - clickable chain clean build
+    - clickable clean build
   artifacts:
     paths:
       - build/*/app/*.click
