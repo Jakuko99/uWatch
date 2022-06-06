@@ -209,7 +209,7 @@ function update(id, table, column, value) {
 
   try {
     database.transaction(function (tx) {
-        tx.executeSql('UPDATE ? SET ? = ? WHERE id == ?;', [table, column, value, id])
+        tx.executeSql('UPDATE ' + table + ' SET ' + column + ' = "' + value + '" WHERE id == ' + id + ';')
     })
   } catch (err) {
       console.log("Error updating the database: " + err);
