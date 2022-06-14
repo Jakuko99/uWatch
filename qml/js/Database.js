@@ -106,6 +106,26 @@ function readByMAC(table, mac) {
   return result
 }
 
+function readLastByMAC(table, mac) {
+  var database = openDatabase();
+  var result = null;
+
+  try {
+    database.transaction(function (tx) {
+        result = tx.executeSql(
+                    'SELECT * FROM ' + table + ' WHERE mac == "' + mac + '" ORDER BY id DESC LIMIT 1;');
+    })
+  } catch (err) {
+      console.log("Error reading from database: " + err);
+  }
+
+  if(result.rows.item(0) == null) {
+      return "0";
+  } else {
+      return result.rows.item(0).value;
+  }
+}
+
 function readByDate(table, mac, date) {
   var database = openDatabase();
   var result = null;
@@ -139,6 +159,26 @@ function readLastByDate(table, mac, date) {
       return "0";
   } else {
       return result.rows.item(0).value;
+  }
+}
+
+function readSumByDate(table, mac, date) {
+  var database = openDatabase();
+  var result = null;
+
+  try {
+    database.transaction(function (tx) {
+        result = tx.executeSql(
+                    'SELECT SUM(value) as sum_val FROM ' + table + ' WHERE mac == "' + mac + '" AND date LIKE "' + date + '%" ORDER BY id DESC LIMIT 1;');
+    })
+  } catch (err) {
+      console.log("Error reading from database: " + err);
+  }
+
+  if(result.rows.item(0) == null) {
+      return "0";
+  } else {
+      return result.rows.item(0).sum_val;
   }
 }
 
