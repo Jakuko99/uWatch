@@ -11,6 +11,7 @@ from .Sender import device_paired
 from .Sender import unpair_device
 from .Sender import read
 from .Sender import write
+from .Sender import set_agent
 from .Receiver import get_new_device_filter
 from .Receiver import get_connection_success_filter
 from .Receiver import get_connected_filter
@@ -19,3 +20,4 @@ from .Receiver import get_pair_successful_filter
 from .Receiver import get_remove_device_filter
 from .Receiver import get_read_value_filter
 from .Receiver import get_device_paired_filter
+from .Receiver import get_request_pair_filter
