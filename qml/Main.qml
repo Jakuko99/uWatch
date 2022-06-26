@@ -17,6 +17,7 @@ MainView {
     objectName: 'mainView'
     applicationName: 'uwatch.jiho'
     automaticOrientation: true
+    anchorToKeyboard: true
 
     width: units.gu(45)
     height: units.gu(75)
@@ -64,7 +65,7 @@ MainView {
 
       // Init uGatt
       python.call('uwatch.initialize', [], function(result) {
-        
+
       })
     }
 }
