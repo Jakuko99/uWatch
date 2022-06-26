@@ -175,7 +175,7 @@ function readSumByDate(table, mac, date) {
       console.log("Error reading from database: " + err);
   }
 
-  if(result.rows.item(0) == null) {
+  if(result.rows.item(0).sum_val == null) {
       return "0";
   } else {
       return result.rows.item(0).sum_val;
