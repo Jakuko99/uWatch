@@ -5,16 +5,17 @@ import shlex
 import errno
 import threading
 
+
 class process_worker(threading.Thread):
-    def __init__ (self,process):
+    def __init__(self, process):
         threading.Thread.__init__(self)
-        self.process    = process
-        self.expect     = []
+        self.process = process
+        self.expect = []
         self.not_expect = []
-        self.errorList  = []
-        self.out        = []
-        self.timeout    = 0
-        self.verbose    = False
+        self.errorList = []
+        self.out = []
+        self.timeout = 0
+        self.verbose = False
 
     def run(self):
         while True:
@@ -31,30 +32,31 @@ class process_worker(threading.Thread):
                             print(self.out)
                 elif len(self.expect) > 0:
                     if self.verbose == True:
-                            print("Expecting in " + output.strip())
-                            print(self.expect)
+                        print("Expecting in " + output.strip())
+                        print(self.expect)
                     if any(exp in output for exp in self.expect):
                         self.append_output(output.strip())
                         if self.verbose == True:
                             print("Pushing to output: " + output.strip())
                             print("Output is now:")
                             print(self.out)
-                        
+
                     elif len(self.errorList) > 0:
                         if any(err in output for err in self.errorList):
                             print("error")
 
-    def send_input(self, func, input, timeout):
+    def send_input(self, func, input, linebreak, timeout):
         if func != None and input == None:
             input = func
         elif func != None and input != None:
             input = func(input)
-            
+
         self.timeout = timeout
         try:
             for line in input:
                 self.process.stdin.write(line)
-                self.process.stdin.write('\n')
+                if linebreak:
+                    self.process.stdin.write('\n')
         except IOError as e:
             if e.errno == errno.EPIPE or e.errno == errno.EINVAL:
                 # Stop loop on "Invalid pipe" or "Invalid argument".
@@ -96,12 +98,13 @@ class process_worker(threading.Thread):
 
 # Execute one command that is not interactive and return output
 
+
 def execute(command):
     stream = subprocess.Popen(command,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        universal_newlines=True,
-                        bufsize=0)
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              universal_newlines=True,
+                              bufsize=0)
 
     stream.wait()
 
@@ -109,17 +112,17 @@ def execute(command):
 
 # Execute one command that is interactive and let it run until stopped
 
+
 def execute_interactive(executable):
     stream = subprocess.Popen(executable,
-                        stdin =subprocess.PIPE,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        universal_newlines=True,
-                        bufsize=0)
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              universal_newlines=True,
+                              bufsize=0)
 
     return stream
 
+
 def stop_interactive(process):
     process.terminate()
-
-

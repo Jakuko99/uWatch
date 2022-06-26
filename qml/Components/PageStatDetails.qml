@@ -7,14 +7,17 @@ import io.thp.pyotherside 1.3
 import Ubuntu.Components.Themes 1.3
 import Ubuntu.Components.Popups 1.3
 
+import "../Components"
+import "../js/Database.js" as DB
+
 Page {
     id: pageStatDetails
 
-    property string deviceMAC: ""
+    property var deviceObject: null
     property string page: ""
 
-    property string selectedFullDate: ""
     property int selectedIndex: -1
+    property int itemID: -1
 
     header: BaseHeader {
         id: pageStatDetailsHeader
@@ -91,7 +94,7 @@ Page {
 
                         onTriggered: {
                           selectedIndex = index
-                          selectedFullDate = fullDate
+                          itemID = id;
                           PopupUtils.open(deleteValueDialogComponent)
                         }
                     }
@@ -108,7 +111,7 @@ Page {
         hint.text: i18n.tr("Add value")
         preloadContent: true
 
-        contentUrl: Qt.resolvedUrl("PageAddValue.qml")
+        contentUrl: Qt.resolvedUrl("AddValue.qml")
     }
 
     Component {
@@ -119,17 +122,17 @@ Page {
         text: i18n.tr("Are you sure you want to delete this entry?")
 
         Button {
-            text: "Delete"
+            text: i18n.tr("Delete")
             color: theme.palette.normal.negative
 
             onClicked: {
               PopupUtils.close(deleteValueDialog)
-              deleteValue(selectedFullDate)
+              deleteValue()
             }
         }
 
         Button {
-            text: "Cancel"
+            text: i18n.tr("Cancel")
 
             onClicked: {
               PopupUtils.close(deleteValueDialog)
@@ -141,29 +144,28 @@ Page {
     Component.onCompleted: listStats()
 
     function listStats() {
-      let action = ""
+      let values = null
       switch(page) {
         case "Heart rate":
-          action = "getHeartRate";
+          values = DB.readAll("heartrate");
           break;
         case "Steps":
-          action = "getSteps";
+          values = DB.readAll("steps");
           break;
         default:
-          action = "none";
+          //action = "none";
           break;
       }
 
-      python.call('uwatch.' + action, [deviceMAC], function(result) {
-        result.forEach((el, i) => {
-          let date = el[1].split("T")[0]
-          let time = el[1].split("T")[1].split(".")[0]
-          statDetailsListModel.append({value: el[0], date: date + " " + time, fullDate: el[1]});
-        })
-      });
+      for(let i = 0; i < values.rows.length; i++) {
+        let row = values.rows.item(i);
+        let date = new Date(Date.parse(row.date)).toLocaleString();//values[2].split("T")[0]
+
+        statDetailsListModel.append({id: row.id, value: row.value, date: date, fullDate: row.date});
+      }
     }
 
-    function deleteValue(date) {
+    function deleteValue() {
       let table = ""
       switch(page) {
         case "Heart rate":
@@ -177,9 +179,7 @@ Page {
           break;
       }
 
-      python.call('uwatch.deleteValues', [table, deviceMAC, date], function(result) {
-
-      });
+      DB.deleteByID(table, itemID);
       statDetailsListModel.remove(selectedIndex);
     }
 }

@@ -1,0 +1,173 @@
+{
+  "Firmware": "Default",
+  "UUID": [
+    {
+        "Name": "Generic Attribute Profile",
+        "Type": "Primary Service",
+        "UUID": "00001801-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0006",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Service Changed",
+        "Type": "Characteristic",
+        "UUID": "00002a05-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0008",
+        "Parent": "Generic Attribute Profile",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Device Information",
+        "Type": "Primary Service",
+        "UUID": "0000180a-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x000a",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Manufacturer Name String",
+        "Type": "Characteristic",
+        "UUID": "00002a29-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x000c",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Model Number String",
+        "Type": "Characteristic",
+        "UUID": "00002a24-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x000e",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Serial Number String",
+        "Type": "Characteristic",
+        "UUID": "00002a25-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0010",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Firmware Revision String",
+        "Type": "Characteristic",
+        "UUID": "00002a26-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0012",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Hardware Revision String",
+        "Type": "Characteristic",
+        "UUID": "00002a27-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0014",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Software Revision String",
+        "Type": "Characteristic",
+        "UUID": "00002a28-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0016",
+        "Parent": "Device Information",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Current Time Service",
+        "Type": "Primary Service",
+        "UUID": "00001805-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0017",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Current Time",
+        "Type": "Characteristic",
+        "UUID": "00002a2b-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0019",
+        "Parent": "Current Time Service",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Alert Notification Service",
+        "Type": "Primary Service",
+        "UUID": "00001811-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x003f",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "New Alert",
+        "Type": "Characteristic",
+        "UUID": "00002a46-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0041",
+        "Parent": "Alert Notification Service",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Battery Service",
+        "Type": "Primary Service",
+        "UUID": "0000180f-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x004d",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Battery Level",
+        "Type": "Characteristic",
+        "UUID": "00002a19-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0054",
+        "Parent": "Battery Service",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Immediate Alert",
+        "Type": "Primary Service",
+        "UUID": "00001802-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0052",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Alert Level",
+        "Type": "Characteristic",
+        "UUID": "00002a06-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0052",
+        "Parent": "Immediate Alert",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Heart Rate",
+        "Type": "Primary Service",
+        "UUID": "0000180d-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0053",
+        "Parent": "None",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+        "Name": "Heart Rate Measurement",
+        "Type": "Characteristic",
+        "UUID": "00002a37-0000-1000-8000-00805f9b34fb",
+        "Handle": "0x0055",
+        "Parent": "Heart Rate",
+        "ValidSinceFirmware": "0.1"
+    },
+    {
+      "Name": "Control Point",
+      "Type": "Characteristic",
+      "UUID": "00001531-1212-efde-1523-785feabcd123",
+      "Handle": "0x0049",
+      "Parent": "DFU",
+      "ValidSinceFirmware": "0.1"
+    },
+    {
+      "Name": "Packet",
+      "Type": "Characteristic",
+      "UUID": "00001532-1212-efde-1523-785feabcd123",
+      "Handle": "0x0047",
+      "Parent": "DFU",
+      "ValidSinceFirmware": "0.1"
+    }
+  ]
+}

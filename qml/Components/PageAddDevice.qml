@@ -5,46 +5,26 @@ import Ubuntu.Components.Popups 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import QtBluetooth 5.9
+import "../Components"
+import "../js/Database.js" as DB
+import "../js/Devices.js" as Devices
+import "../js/GATT.js" as GATT
 
 Page {
     id: addDeviceView
 
+    property var listModel: null
+
     property string selectedFirmware: ""
     property string selectedMAC: ""
+    property var watchesObject: null
 
     anchors.fill: parent
-
-    function scanDevices() {
-      listModel.clear()
-      python.call('uwatch.add_device', [root.devices], function(devices) {
-        if(devices.length > 0) {
-          devices.forEach((el, i) => listModel.append({firmware: el[1], deviceMAC: el[0]}));
-        } else {
-          scanLabel.text = i18n.tr("Could not find any devices.")
-        }
-      })
-    }
 
     header: BaseHeader {
         id: addDeviceViewHeader
         title: i18n.tr('Add device')
-
-        trailingActionBar {
-           actions: [
-            Action {
-              iconName: "sync"
-              text: i18n.tr("Sync")
-
-              onTriggered: scanDevices()
-            }
-          ]
-        }
-    }
-
-    Component.onCompleted: scanDevices()
-
-    ListModel {
-        id: listModel
     }
 
     ScrollView {
@@ -59,17 +39,23 @@ Page {
         ListView {
             id: devicesListView
             anchors.fill: parent
-            model: listModel
+            model: btModel
             delegate: devicesDelegate
             focus: true
 
             Label {
                 id: scanLabel
                 anchors.centerIn: parent
-                text: i18n.tr("Scanning for devices")
-                visible: devicesListView.count === 0 && !listModel.loading
+                text: i18n.tr("Scanning...")
+                visible: devicesListView.count === 0
             }
         }
+    }
+
+    BluetoothDiscoveryModel {
+      id: btModel
+      running: true
+      discoveryMode: BluetoothDiscoveryModel.DeviceDiscovery
     }
 
     Component{
@@ -79,15 +65,15 @@ Page {
             id: deviceItemDelegate
 
             onClicked: {
-              selectedFirmware = firmware
-              selectedMAC = deviceMAC
+              selectedFirmware = qsTr(deviceName)
+              selectedMAC = qsTr(remoteAddress)
               PopupUtils.open(pairDialogComponent)
             }
 
             ListItemLayout {
                 anchors.centerIn: parent
-                title.text: firmware
-                subtitle.text: deviceMAC
+                title.text: qsTr(deviceName)
+                subtitle.text: qsTr(remoteAddress)
             }
         }
     }
@@ -125,17 +111,88 @@ Page {
         text: i18n.tr("Attempting to pair with") + " " + addDeviceView.selectedMAC
 
         Component.onCompleted: {
-          python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
+          /*python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
             PopupUtils.close(attemptPairDialog)
             if(result) {
-              python.call('uwatch.addDevice', [addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""], function(result) {
-
-              })
+              DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
               PopupUtils.open(pairSuccessfulDialogComponent)
             } else {
               PopupUtils.open(pairUnsuccessfulDialogComponent)
             }
+          })*/
+          python.call('uwatch.requestPair', [addDeviceView.selectedMAC], function(result) {
+            PopupUtils.close(attemptPairDialog)
+            if(result) {
+              //DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
+              PopupUtils.open(pairCodeDialogComponent)
+            } else {
+              PopupUtils.open(pairUnsuccessfulDialogComponent)
+            }
           })
+        }
+      }
+    }
+
+    Component {
+      id: pairCodeDialogComponent
+      Dialog {
+        id: pairCodeDialog
+        title: i18n.tr("PIN needed")
+        text: i18n.tr("Please enter the PIN displayed on your watch.")
+
+        Rectangle {
+          TextField {
+            id: pinTextField
+            anchors {
+              top: parent.top
+              left: parent.left
+              right: parent.right
+            }
+          }
+
+          Button {
+            anchors {
+              top: pinTextField.bottom
+              left: parent.left
+              topMargin: units.gu(1)
+            }
+
+            width: parent.width / 2 -units.gu(1)
+
+            text: "Cancel"
+
+            /*onClicked: {
+              PopupUtils.close(pairSuccessfulDialog)
+
+              let newWatch = DB.readByMAC("watches", addDeviceView.selectedMAC);
+              listModel.append({deviceObject: newWatch.rows.item(0)})
+              pageStack.pop()
+            }*/
+          }
+
+          Button {
+            anchors {
+              top: pinTextField.bottom
+              right: parent.right
+              topMargin: units.gu(1)
+            }
+
+            width: parent.width / 2 -units.gu(1)
+
+            text: "Send"
+
+            onClicked: {
+              python.call('uwatch.confirmPair', [addDeviceView.selectedMAC, pinTextField.text], function(result) {
+                PopupUtils.close(pairCodeDialog)
+                if(result) {
+                  DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
+                  PopupUtils.open(pairSuccessfulDialogComponent)
+                } else {
+                  PopupUtils.open(pairUnsuccessfulDialogComponent)
+                }
+              })
+            }
+          }
         }
       }
     }
@@ -152,9 +209,10 @@ Page {
 
             onClicked: {
               PopupUtils.close(pairSuccessfulDialog)
+
+              let newWatch = DB.readByMAC("watches", addDeviceView.selectedMAC);
+              listModel.append({deviceObject: newWatch.rows.item(0)})
               pageStack.pop()
-              pageStack.pop()
-              pageStack.push(Qt.resolvedUrl("./PageWelcome.qml"), {newFirmware: addDeviceView.selectedFirmware, newMAC: addDeviceView.selectedMAC})
             }
         }
       }

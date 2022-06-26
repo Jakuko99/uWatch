@@ -5,17 +5,22 @@ except:
 
 import time
 
-backend = "bluetoothctl" # default to bluetoothctl as this is the preferred backend - gatttool is deprecated
+# default to bluetoothctl as this is the preferred backend - gatttool is deprecated
+backend = "bluetoothctl"
+
 
 def set_backend():
     global backend
 
     process = execute_interactive(["bluetoothctl"])
-    
+
     listener = start_listening(process, False)
-    listener.expect_output(["Version"]) # Expect the string "Version" in output
-    listener.send_input(None, ["version"], 0) # Send sub command to bluetooth ctl to read the current version
-    listener.send_input(None, ['exit'], 0) # Exit bluetoothctl cleanly to be able to join the thread. This is not supposed to be a continously running process as it is just to determin which backend to use.
+    # Expect the string "Version" in output
+    listener.expect_output(["Version"])
+    # Send sub command to bluetooth ctl to read the current version
+    listener.send_input(None, ["version"], True, 0)
+    # Exit bluetoothctl cleanly to be able to join the thread. This is not supposed to be a continously running process as it is just to determin which backend to use.
+    listener.send_input(None, ['exit'], True, 0)
 
     #if not listener.is_alive():
     #    print(listener.get_output())
@@ -29,24 +34,27 @@ def set_backend():
     ###
     version = listener.get_output()[0].split(' ')[1]
     print("Ver: " + version)
-    if float(version) < 5.48: 
+    if float(version) < 5.48:
         backend = "gatttool"
         return load_gatttool_backend()
     else:
         backend = "bluetoothctl"
-        return load_bluetoothctl_backend() 
+        return load_bluetoothctl_backend()
+
 
 def get_backend_exec():
     return backend
 
+
 def load_gatttool_backend():
     try:
         global get_backend
-        from .gatttool import get_backend 
+        from .gatttool import get_backend
         return True
     except:
         print("could not import backend")
         return False
+
 
 def load_bluetoothctl_backend():
     try:
@@ -57,14 +65,18 @@ def load_bluetoothctl_backend():
         print("Could not import backend:" + e)
         return False
 
+
 def start_backend():
     return execute_interactive(get_backend())
+
 
 def force_backend(backend):
     return execute_interactive(backend)
 
+
 def stop_backend(process):
     process.terminate()
+
 
 def start_listening(process, daemon):
     listen = process_worker(process)
@@ -73,8 +85,10 @@ def start_listening(process, daemon):
 
     return listen
 
+
 def stop_listening(listener):
     listener.stop()
+
 
 def send_expect(listener, expectList):
     listener.clear_output()

@@ -1,11 +1,13 @@
 import QtQuick 2.9
 import Ubuntu.Components 1.3
+import "../../js/Helper.js" as Helper
 
 Rectangle {
-  property var values: []
+  property var values: Helper.getWeek("short")
 
   anchors {
     bottom: parent.bottom
+    left: graphyAchsis.right
   }
 
   height: units.gu(4)

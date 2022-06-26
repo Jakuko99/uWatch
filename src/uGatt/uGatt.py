@@ -23,7 +23,8 @@ def init():
                 listener = start_listening(process, True)
 
                 global start_scan, stop_scan, connect_device, device_connected, disconnect_device, pair_device, device_paired, unpair_device, read, write, quit_interactive
-                global get_connected_filter, get_connection_success_filter, get_disconnect_success_filter, get_new_device_filter, get_pair_successful_filter, get_read_value_filter, get_write_value_filter, get_remove_device_filter, get_device_paired_filter
+                global get_connected_filter, get_connection_success_filter, get_disconnect_success_filter, get_new_device_filter, get_request_pair_filter, get_pair_successful_filter, get_read_value_filter, get_write_value_filter, get_remove_device_filter, get_device_paired_filter
+                global set_agent
 
                 from Backend.bluetoothctl import start_scan
                 from Backend.bluetoothctl import stop_scan
@@ -38,6 +39,8 @@ def init():
                 from Backend.bluetoothctl import get_remove_device_filter
                 from Backend.bluetoothctl import unpair_device
                 from Backend.bluetoothctl import get_device_paired_filter
+                from Backend.bluetoothctl import get_request_pair_filter
+                from Backend.bluetoothctl import set_agent
 
                 if backend == "gatttool":
                     from Backend.gatttool import connect_device
@@ -86,10 +89,10 @@ def scan():
         l.log_verbose(verbose)
         print("Listening...")
         send_expect(l, get_new_device_filter())
-        l.send_input(None, start_scan(), 0)
-        time.sleep(5)
-        l.send_input(None, stop_scan(), 0)
-        l.send_input(None, quit_interactive(), 0)
+        l.send_input(None, start_scan(), True, 0)
+        time.sleep(3)
+        l.send_input(None, stop_scan(), True, 0)
+        l.send_input(None, quit_interactive(), True, 0)
 
         stop_listening(l)
         stop_interactive(p)
@@ -107,7 +110,7 @@ def connect(mac):
                 listener.log_verbose(verbose)
                 scan()
                 send_expect(listener, get_connection_success_filter())
-                listener.send_input(connect_device, mac, 0)
+                listener.send_input(connect_device, mac, True, 0)
 
                 time.sleep(2)
 
@@ -129,13 +132,13 @@ def is_connected(mac):
 
         time.sleep(1)
         l = start_listening(p, True)
-        l.log_verbose(False)
+        l.log_verbose(verbose)
         send_expect(l, get_connected_filter())
-        l.send_input(device_connected, mac, 0)
+        l.send_input(device_connected, mac, True, 0)
 
         time.sleep(1)
 
-        l.send_input(None, quit_interactive(), 0)
+        l.send_input(None, quit_interactive(), True, 0)
 
         stop_listening(l)
         stop_interactive(p)
@@ -155,7 +158,7 @@ def disconnect(mac):
         if listener != None:
             listener.log_verbose(verbose)
             send_expect(listener, get_disconnect_success_filter())
-            listener.send_input(disconnect_device, mac, 0)
+            listener.send_input(disconnect_device, mac, True, 0)
 
             time.sleep(3)
 
@@ -163,6 +166,81 @@ def disconnect(mac):
                 return True
             else:
                 return False
+
+
+def requestPair(mac):
+    if process != None:
+        if is_paired(mac) is not True:
+            p = None
+            if backend != "bluetoothctl":
+                p = force_backend("bluetoothctl")
+            else:
+                p = process
+
+            time.sleep(1)
+            l = start_listening(p, True)
+            l.log_verbose(verbose)
+            send_expect(l, get_request_pair_filter())
+            l.send_input(None, set_agent(), True, 0)
+            time.sleep(1)
+            l.send_input(pair_device, mac, True, 0)
+            time.sleep(3)
+
+            if len(l.get_output()) > 0:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
+
+def confirmPair(mac, code):
+    if process != None:
+        if is_paired(mac) is not True:
+            p = None
+            if backend != "bluetoothctl":
+                p = force_backend("bluetoothctl")
+            else:
+                p = process
+
+            time.sleep(1)
+            l = start_listening(p, True)
+            l.log_verbose(verbose)
+            send_expect(l, get_pair_successful_filter())
+            l.send_input(None, [code], True, 0)
+            time.sleep(5)
+            l.send_input(None, quit_interactive(), True, 0)
+
+            stop_listening(l)
+            stop_interactive(p)
+
+            if len(l.get_output()) > 0:
+                return True
+            else:
+                return False
+        else:
+            return True
+    else:
+        return False
+
+
+def cancelPairRequest():
+    if process != None:
+        p = None
+        if backend != "bluetoothctl":
+            p = force_backend("bluetoothctl")
+        else:
+            p = process
+
+        time.sleep(1)
+        l = start_listening(p, True)
+        l.log_verbose(verbose)
+        l.send_input(None, quit_interactive(), True, 0)
+
+        stop_listening(l)
+        stop_interactive(p)
 
 
 def pair(mac):
@@ -178,11 +256,11 @@ def pair(mac):
             l = start_listening(p, True)
             l.log_verbose(verbose)
             send_expect(l, get_pair_successful_filter())
-            l.send_input(pair_device, mac, 0)
+            l.send_input(pair_device, mac, True, 0)
             time.sleep(3)
-            l.send_input(disconnect_device, mac, 0)
+            l.send_input(disconnect_device, mac, True, 0)
             time.sleep(1)
-            l.send_input(None, quit_interactive(), 0)
+            l.send_input(None, quit_interactive(), True, 0)
 
             stop_listening(l)
             stop_interactive(p)
@@ -193,6 +271,8 @@ def pair(mac):
                 return False
         else:
             return True
+    else:
+        return False
 
 
 def is_paired(mac):
@@ -207,9 +287,9 @@ def is_paired(mac):
         l = start_listening(p, True)
         l.log_verbose(verbose)
         send_expect(l, get_device_paired_filter())
-        l.send_input(device_paired, mac, 0)
+        l.send_input(device_paired, mac, True, 0)
         time.sleep(1)
-        l.send_input(None, quit_interactive(), 0)
+        l.send_input(None, quit_interactive(), True, 0)
 
         stop_listening(l)
         stop_interactive(p)
@@ -233,9 +313,9 @@ def unpair(mac):
             l = start_listening(p, True)
             l.log_verbose(verbose)
             send_expect(l, get_remove_device_filter())
-            l.send_input(unpair_device, mac, 0)
+            l.send_input(unpair_device, mac, True, 0)
             time.sleep(1)
-            l.send_input(None, quit_interactive(), 0)
+            l.send_input(None, quit_interactive(), True, 0)
 
             stop_listening(l)
             stop_interactive(p)
@@ -254,7 +334,7 @@ def write_value_uuid(uuid, value):
             if listener != None:
                 listener.log_verbose(verbose)
                 send_expect(listener, [])
-                listener.send_input(write, [uuid, value], 0)
+                listener.send_input(write, [uuid, value], True, 0)
 
                 time.sleep(3)
 
@@ -265,7 +345,7 @@ def write_handle(handle, value):
             if listener != None:
                 listener.log_verbose(verbose)
                 send_expect(listener, get_write_value_filter())
-                listener.send_input(write, [handle, value], 0)
+                listener.send_input(write, [handle, value], True, 0)
 
                 time.sleep(3)
 
@@ -274,8 +354,8 @@ def read_value(uuid):
     if process != None:
         if listener != None:
             send_expect(listener, get_read_value_filter())
-            listener.log_verbose(True)
-            listener.send_input(read, uuid, 0)
+            listener.log_verbose(verbose)
+            listener.send_input(read, uuid, True, 0)
 
             time.sleep(3)
 

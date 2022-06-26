@@ -1,50 +1,6 @@
-import JSONHelper
 import json
 from uGatt import getBackend, format_input
 from datetime import datetime
-
-
-def getDevices(root):
-    devices = []
-
-    for node in JSONHelper.getNodes(root)["Devices"]:
-        devices.append(node["Firmware"])
-
-    return devices
-
-
-def getUUID(root, firmware, characteristic):
-    for node in JSONHelper.getNodes(root)["Devices"]:
-        if node["Firmware"] == firmware:
-            for uuid in node["UUID"]:
-                uuidInfo = JSONHelper.getNodes(json.dumps(uuid))
-                if uuidInfo["Name"] == characteristic:
-                    return uuidInfo["UUID"]
-
-    return getUUID(root, "Default", characteristic)
-
-
-def getHandle(root, firmware, characteristic):
-    for node in JSONHelper.getNodes(root)["Devices"]:
-        if node["Firmware"] == firmware:
-            for uuid in node["UUID"]:
-                uuidInfo = JSONHelper.getNodes(json.dumps(uuid))
-                if uuidInfo["Name"] == characteristic:
-                    return uuidInfo["Handle"]
-
-    return getHandle(root, "Default", characteristic)
-
-
-def getValidVersion(root, firmware, characteristic):
-    for node in JSONHelper.getNodes(root)["Devices"]:
-        if node["Firmware"] == firmware:
-            for uuid in node["UUID"]:
-                uuidInfo = JSONHelper.getNodes(json.dumps(uuid))
-                if uuidInfo["Name"] == characteristic:
-                    print(uuidInfo["ValidSinceFirmware"])
-                    return uuidInfo["ValidSinceFirmware"]
-
-    return getValidVersion(root, "Default", characteristic)
 
 
 def currentTimeToHex():

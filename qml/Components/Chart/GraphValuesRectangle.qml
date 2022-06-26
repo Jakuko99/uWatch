@@ -1,12 +1,14 @@
 import QtQuick 2.9
 import Ubuntu.Components 1.3
 
+import "../../js/Helper.js" as Helper
+
 Rectangle {
+  id: graphValuesRectangle
   property var values: []
-  property int max: 0
 
   function calculateHeight(parentHeight, value) {
-    var newPercent = value*100/max
+    var newPercent = value*100/Helper.getMaxValue(values)
     var newHeight = parentHeight * newPercent/100
 
     return newHeight - units.gu(1)
@@ -15,34 +17,18 @@ Rectangle {
   color: "transparent"
 
   Row {
+    id: valuesRow
+    anchors.fill: parent
 
-    anchors {
-      left: parent.left
-      right: parent.right
-    }
-
-    height: parent.height
-
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[0]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[1]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[2]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[3]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[4]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[5]) : 0
-    }
-    GraphValues {
-      rectangleHeight: values.length > 0 ? calculateHeight(parent.height, values[6]) : 0
+    Component.onCompleted: {
+      for(let i = 0; i < values.length; i++) {
+        let component = Qt.createComponent("GraphValues.qml");
+        let obj = component.createObject(valuesRow, {x: 100, y: 100, rectangleHeight: calculateHeight(graphValuesRectangle.height, values[i])});
+        if (obj == null) {
+            // Error Handling
+            console.log("Error creating object");
+        }
+      }
     }
   }
 }

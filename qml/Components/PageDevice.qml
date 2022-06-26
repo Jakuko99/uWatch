@@ -4,402 +4,262 @@ import Ubuntu.Components 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import QtCharts 2.0
+import "../Components"
+import "../Components/Chart"
+import "../Components/Stats"
 
-import "Chart"
-import "Stats"
+import "../js/Database.js" as DB
+import "../js/Devices.js" as Devices
+import "../js/GATT.js" as GATT
+import "../js/Helper.js" as Helper
 
 Page {
-    id: deviceView
-    anchors.fill: parent
+  id: deviceView
+  anchors.fill: parent
 
-    // Device specific variables
-    property string json: "{}"
-    property string deviceMAC: ""
-    property string firmware: ""
-    property string firmwareVersion: ""
+  property string json: "{}"
 
-    // Graph stats
-    property var dateArray: []
-    property var heartRateVals: []
-    property var stepsVals: []
+  // Device specific variables
+  property var deviceObject: null
 
-    header: BaseHeader{
-        id: deviceViewHeader
-        title: i18n.tr('uWatch')
+  // Graph stats
+  property var dateArray: []
+  property var heartRateVals: []
+  property var stepsVals: []
 
-        trailingActionBar {
-           actions: [
-            Action {
-             iconName: "settings"
-             text: i18n.tr("Settings")
+  property string battery: DB.readLastByDate("battery", deviceObject.mac, Helper.getToday())
+  property string heartrate: DB.readLastByDate("heartrate", deviceObject.mac, Helper.getToday())
+  property string steps: DB.readSumByDate("steps", deviceObject.mac, Helper.getToday())
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("PageSettings.qml"))
-            },
-            Action {
-              iconName: "sync"
-              text: i18n.tr("Sync")
+  header: BaseHeader{
+      id: deviceViewHeader
+      title: deviceObject.firmware + ' ' + deviceObject.firmwareVersion
 
-              onTriggered: {
-                python.call('uwatch.getConnectionState', [deviceMAC], function(result) {
-                  if(result) {
-                    if(firmwareVersion == "") {
-                      updateFirmwareRevision();
+      flickable: deviceFlickable
+
+      trailingActionBar {
+         actions: [
+          Action {
+           iconName: "settings"
+           text: i18n.tr("Settings")
+
+           onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
+          },
+          Action {
+            iconName: "sync"
+            text: i18n.tr("Sync")
+
+            onTriggered: {
+              python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
+                if(result) {
+                  syncData();
+                } else {
+                  python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
+                    if(connected) {
+                      syncData();
                     }
-                    syncData();
-                  } else {
-                    python.call('uwatch.connectDevice', [deviceMAC], function(connected) {
-                      if(connected) {
-                        if(firmwareVersion == "") {
-                          updateFirmwareRevision();
-                        }
-                        syncData();
-                      }
-                    })
-                  }
-                })
-              }
+                  })
+                }
+                updateView();
+              });
             }
-          ]
-        }
-    }
+          }
+        ]
+      }
+  }
 
-    Row {
-      id: deviceStatsView
+  ScrollView {
+    width: parent.width
+    height: parent.height
+    contentItem: deviceFlickable
+  }
+
+  Flickable {
+    id: deviceFlickable
+
+    property bool refreshing: true
+
+    width: parent.width
+    height: parent.height
+
+    contentHeight: deviceColumn.height + settings.margin * 2
+
+    Column {
+      id: deviceColumn
 
       anchors {
-        top: deviceViewHeader.bottom
         left: parent.left
         right: parent.right
-        topMargin: units.gu(2)
+        top: parent.top
+        topMargin: settings.margin
+        leftMargin: settings.margin
+        rightMargin: settings.margin
+        bottomMargin: units.gu(4)
       }
 
-      height: units.gu(7)
+      spacing: settings.margin
 
-      StatsRectangle {
-
-        StatsIcon {
-          iconName: "battery_full"
-        }
-
-        StatsLabel {
-          id: batteryLevelLabel
-          labelText: "0 %"
-        }
-      }
-
-      StatsRectangle {
-
-        StatsIcon {
-          iconName: "like"
-        }
-
-        StatsLabel {
-          id: heartRateLabel
-          labelText: "0"
-        }
-      }
-
-      /*StatsRectangle {
-
-        StatsIcon {
-          iconName: "timer"
-        }
-
-        StatsLabel {
-          labelText: settings.calorieLevel
-        }
-      }*/
-
-      StatsRectangle {
-
-        StatsIcon {
-          iconName: "transfer-progress"
-        }
-
-        StatsLabel {
-          id: stepsLabel
-          labelText: "0"
-        }
-      }
-    }
-
-    ScrollView {
-      anchors {
-        top: deviceStatsView.bottom
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
-      }
-
-      Column {
-        id: deviceInfoBox
+      Row {
+        id: deviceStatsView
 
         anchors {
           left: parent.left
           right: parent.right
-          top: parent.top
-          leftMargin: units.gu(2)
-          rightMargin: units.gu(2)
-          bottomMargin: units.gu(4)
-          topMargin: units.gu(2)
         }
 
-        Label {
-          id: lblDeviceName
+        height: units.gu(7)
 
-          text: firmware
-          textSize: Label.Large
+        StatsRectangle {
+          id: batteryLevel
+
+          icon: "battery_full"
+          text: battery + " %"
         }
 
-        Label {
-          id: lblFirmware
+        StatsRectangle {
+          id: heartRateLevel
 
-          text: i18n.tr("Firmware") + ": " + firmwareVersion
-          textSize: Label.Small
+          icon: "like"
+          text: heartrate
         }
 
-        Label {
-          id: lblHardware
+        StatsRectangle {
+          id: stepsLevel
 
-          text: i18n.tr("MAC") + ": " + deviceMAC
-          textSize: Label.Small
+          icon: "transfer-progress"
+          text: steps
         }
+      }
+    }
 
-        Graph {
-          id: heartRateGraph
+    PullToRefresh {
+      id: devicePullToRefresh
 
-          width: deviceView.width - units.gu(4)
+      property int columnLength: deviceColumn.children.length
 
-          property int max: heartRateVals.length > 0 ? Math.max.apply(Math, heartRateVals) : 200
-
-          GraphHeader {
-            id: heartRateGraphHeader
-            title: i18n.tr("Heart rate (Highest)")
-            page: "Heart rate"
-          }
-
-          YAchsis {
-            id: heartRateyAchsis
-
-            anchors.top:heartRateGraphHeader.bottom
-
-            max: parent.max
-          }
-
-          XAchsis {
-            id: heartRatexAchsis
-
-            anchors.left: heartRateyAchsis.right
-
-            values: dateArray
-          }
-
-          GraphValuesRectangle {
-            id: heartRateValues
-
-            anchors {
-              left: heartRateyAchsis.right
-              right: parent.right
-              top: heartRateGraphHeader.bottom
-              bottom: heartRatexAchsis.top
-            }
-
-            max: parent.max
-
-            values: heartRateVals
-          }
-        }
-
-        // Display steps graph as steps can be manually added
-        Graph {
-          id: stepsGraph
-          width: deviceView.width - units.gu(4)
-
-          property int max: stepsVals.length > 0 ? Math.max.apply(Math, stepsVals) : 12000
-
-          GraphHeader {
-            id: stepsGraphHeader
-            title: i18n.tr("Steps")
-            page: "Steps"
-          }
-
-          YAchsis {
-            id: stepsyAchsis
-
-            anchors.top:stepsGraphHeader.bottom
-
-            max: parent.max
-          }
-
-          XAchsis {
-            id: stepsxAchsis
-
-            anchors.left: stepsyAchsis.right
-
-            values: dateArray
-          }
-
-          GraphValuesRectangle {
-            anchors {
-              left: stepsyAchsis.right
-              right: parent.right
-              top: stepsGraphHeader.bottom
-              bottom: stepsxAchsis.top
-            }
-
-            max: parent.max
-
-            values: stepsVals
-          }
-        }
-
-        // Display only after getting steps to sync
-        /*Graph {
-          id: caloriesGraph
-          width: deviceView.width - units.gu(4)
-
-          property int max: 5000 // Dummy values until database exists
-
-          GraphHeader {
-            id: caloriesGraphHeader
-            title: i18n.tr("Burnt calories")
-            page: "Calories"
-          }
-
-          YAchsis {
-            id: caloriesyAchsis
-
-            anchors.top:caloriesGraphHeader.bottom
-
-            max: parent.max
-          }
-
-          XAchsis {
-            id: caloriesxAchsis
-
-            anchors.left: caloriesyAchsis.right
-
-            values: ["04.07.", "05.07.", "06.07.", "07.07.", "08.07.", "09.07.", "10.07."] // Dummy values until database exists
-          }
-
-          GraphValuesRectangle {
-            anchors {
-              left: caloriesyAchsis.right
-              right: parent.right
-              top: caloriesGraphHeader.bottom
-              bottom: caloriesxAchsis.top
-            }
-
-            max: parent.max
-
-            values: ["1800", "2200", "2000", "3100", "1700", "1600", "1800"] // Dummy values until database exists
-          }
-        }*/
+      parent: deviceFlickable
+      refreshing: deviceColumn.children.length != 3
+      onRefresh: updateView()
     }
   }
 
   Component.onCompleted: {
+    if(deviceObject.firmwareVersion == null) {
+      python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
+        if(connected) {
+          Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
+          console.log("Firmware version", DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion);
+          deviceObject.firmwareVersion = DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion;
+        }
+      })
+    }
+
     updateView();
   }
 
   function syncData() {
-    python.call('uwatch.syncTime', [root.devices, firmware, firmwareVersion], function() {})
-    python.call('uwatch.syncFirmware', [root.devices, firmware, firmwareVersion], function(firmware) {
+    let gattobject = GATT.getGATTObject(deviceObject.firmware);
+    let timeObject = GATT.getUUIDObject(gattobject, "Current Time");
+    let firmwareObject = GATT.getUUIDObject(gattobject, "Firmware Revision String");
+    let batteryObject = GATT.getUUIDObject(gattobject, "Battery Level");
+    let heartrateObject = GATT.getUUIDObject(gattobject, "Heart Rate Measurement");
+    let stepsObject = GATT.getUUIDObject(gattobject, "Step count");
 
-    })
-    python.call('uwatch.syncBatteryLevel', [deviceMAC, root.devices, firmware, firmwareVersion], function(batteryLevel) {
+    python.call('uwatch.writeValue', [deviceObject.mac, deviceObject.firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.Handle], function() {})
+    python.call('uwatch.readValue', [deviceObject.mac,
+     deviceObject.firmwareVersion,
+     firmwareObject.ValidSinceFirmware,
+     firmwareObject.UUID,
+     "big-endian", "string"], function(result) {
+       if(result != deviceObject.firmwareVersion) {
+         DB.update(deviceObject.id, "watches", "firmwareVersion", result);
+         deviceObject.id = result;
+       }
+    });
+    python.call('uwatch.readValue', [deviceObject.mac,
+     deviceObject.firmwareVersion,
+     batteryObject.ValidSinceFirmware,
+     batteryObject.UUID,
+     "big-endian", "int"], function(result) {
+       DB.writeStats("battery", [new Date().toISOString(), deviceObject.mac, result]);
+       deviceView.battery = result;
+    });
 
-    })
+    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, heartrateObject.ValidSinceFirmware, heartrateObject.UUID, "big-endian", "int"],  function(result) {
+      if(result != 0) {
+        DB.writeStats("heartrate", [new Date().toISOString(), deviceObject.mac, result]);
+        deviceView.heartrate = result;
+      }
+    });
 
-    python.call('uwatch.syncHeartRate', [deviceMAC, root.devices, firmware, firmwareVersion], function(heartRateLevel) {
+    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, stepsObject.ValidSinceFirmware, stepsObject.UUID, "little-endian", "int"],  function(result) {
+      let value = result - DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
 
-    })
+      if(value > 0) {
+        DB.writeStats("steps", [new Date().toISOString(), deviceObject.mac, value]);
+      }
 
-    python.call('uwatch.syncSteps', [deviceMAC, root.devices, firmware, firmwareVersion], function(stepsLevel) {
-
-    })
+      deviceView.steps = DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
+    });
 
     updateView();
   }
 
   function updateHeartRateView() {
-    heartRateVals = []
+    let heartrates = []
 
-    python.call('uwatch.getLatestHeartRate', [deviceMAC], function(result) {
-      heartRateLabel.labelText = result[0]
-    })
+    let weekdays = Helper.getWeek("long");
 
-    // Get the date range for which to fetch data from the database
-    python.call('uwatch.getISODateArray', [7], function(result) {
-      var tvalues = []
+    for(let i = 0; i < weekdays.length; i++) {
+      let values = DB.readByDate("heartrate", deviceObject.mac, weekdays[i]);
+      let valuesArray = [];
 
-      // Fetch all database entries for the date and get the max value
-      for(let i = 0; i < result.length; i++) {
-        python.call('uwatch.getHeartRateForDate', [deviceMAC, result[i]], function(result) {
-          if(result.length >0) {
-            tvalues.push(Math.max.apply(Math, result))
-          } else {
-            tvalues.push(0)
-          }
-          heartRateVals = tvalues
-        })
+      for(let j = 0; j < values.length; j++) {
+        valuesArray.push(values.item(j).value);
       }
-    })
 
+      if(valuesArray.length > 0) {
+        heartrates.push(Math.max.apply(Math, valuesArray));
+      } else {
+        heartrates.push(0);
+      }
+    }
+
+    return heartrates;
   }
 
   function updateStepsView() {
-    stepsVals = []
+    let steps = []
 
-    python.call('uwatch.getISODateArray', [1], function(result) {
-      python.call('uwatch.getStepsForDate', [deviceMAC, result[0]], function(result) {
-        stepsLabel.labelText = result
-      })
-    })
+    let weekdays = Helper.getWeek("long");
 
-    // Get the date range for which to fetch data from the database
-    python.call('uwatch.getISODateArray', [7], function(result) {
-      var tvalues = []
+    for(let i = 0; i < weekdays.length; i++) {
+      steps.push(
+          DB.readSumByDate(
+            "steps",
+            deviceObject.mac,
+            weekdays[i]
+          )
+      );
+    }
 
-      // Fetch all database entries for the date and get the max value
-      for(let i = 0; i < result.length; i++) {
-        python.call('uwatch.getStepsForDate', [deviceMAC, result[i]], function(result) {
-          if(result > 0) {
-            tvalues.push(result)
-          } else {
-            tvalues.push(0)
-          }
-          stepsVals = tvalues
-        })
-      }
-    })
-
+    return steps
   }
 
   function updateView() {
-    python.call('uwatch.getShortISODateArray', [7], function(result) {
-      dateArray = result
-    })
+    for(let i = 1; i < deviceColumn.children.length; i++) {
+      deviceColumn.children[i].destroy();
+    }
 
-    python.call('uwatch.getFirmware', [deviceMAC], function(result) {
-      deviceView.firmware = result[0]
-    })
-
-    python.call('uwatch.getFirmwareVersion', [deviceMAC], function(result) {
-      deviceView.firmwareVersion = result[0]
-    })
-
-    python.call('uwatch.getLatestBatteryLevel', [deviceMAC], function(result) {
-      batteryLevelLabel.labelText = result[0] + " %"
-    })
-
-    updateHeartRateView()
-    updateStepsView()
+    let component = Qt.createComponent("../Components/Chart.qml")
+    component.createObject(deviceColumn, {title: i18n.tr("Heart rate (Highest)"), page: "Heart rate", values: updateHeartRateView()});
+    component.createObject(deviceColumn, {title: i18n.tr("Steps"), page: "Steps", values: updateStepsView()});
   }
 
   function updateFirmwareRevision() {
-    python.call('uwatch.syncFirmwareRevision', [root.devices, deviceMAC, firmware], function(version) {
-      
-    })
+    /*python.call('uwatch.syncFirmwareRevision', [root.devices, deviceObject.mac, firmware], function(version) {
+
+    })*/
   }
 }

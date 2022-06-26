@@ -6,42 +6,46 @@ import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 import Qt.labs.platform 1.0
 import Ubuntu.Components.Popups 1.3
+import QtQuick.LocalStorage 2.0
+import "../Components"
+import "../js/Database.js" as DB
+import "../js/Devices.js" as Devices
 
 Page {
-    id: welcomeView
+    id: welcomePage
     anchors.fill: parent
 
     property string selectedDevice: ""
+    property string selectedMac: ""
     property int selectedIndex: -1
 
-    // Workaround to add a device after it was newly add
-    property string newFirmware: ""
-    property string newMAC: ""
-
     header: BaseHeader {
-        id: welcomeViewHeader
-        title: i18n.tr('Start')
+        id: welcomePageHeader
+
+        title: 'uWatch'
 
         trailingActionBar {
            actions: [
             Action {
+              iconName: "info"
+              text: i18n.tr("About")
+
+              onTriggered: pageStack.push(Qt.resolvedUrl("About.qml"))
+            },
+            Action {
              iconName: "add"
              text: "Add device"
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("PageAddDevice.qml"))
+             onTriggered: pageStack.push(Qt.resolvedUrl("AddDevice.qml"), {listModel: welcomeListModel})
             }
           ]
         }
     }
 
-    ListModel {
-        id: welcomeListModel
-    }
-
     ScrollView {
         id: welcomeScrollView
         anchors {
-          top: welcomeViewHeader.bottom
+          top: welcomePageHeader.bottom
           left: parent.left
           right: parent.right
           bottom: parent.bottom
@@ -83,6 +87,12 @@ Page {
         }
     }
 
+    Component.onCompleted: Devices.listDevices();
+
+    ListModel {
+        id: welcomeListModel
+    }
+
     Component{
         id: welcomeDelegate
 
@@ -91,8 +101,8 @@ Page {
 
             ListItemLayout {
                 anchors.centerIn: parent
-                title.text: firmware
-                subtitle.text: deviceMAC
+                title.text: deviceObject.firmware
+                subtitle.text: deviceObject.mac
             }
 
             trailingActions: ListItemActions {
@@ -101,15 +111,15 @@ Page {
                         iconName: "delete"
 
                         onTriggered: {
+                          selectedMac = deviceObject.mac
                           selectedIndex = index
-                          selectedDevice = deviceMAC
                           PopupUtils.open(deleteDeviceDialogComponent)
                         }
                     }
                 ]
             }
 
-            onClicked: pageStack.push(Qt.resolvedUrl("PageDevice.qml"), {deviceMAC: deviceMAC, firmware: firmware})
+            onClicked: pageStack.push(Qt.resolvedUrl("Device.qml"), {deviceObject: deviceObject})
         }
       }
 
@@ -121,17 +131,17 @@ Page {
           text: i18n.tr("Are you sure you want to delete this device?")
 
           Button {
-              text: "Delete"
+              text: i18n.tr("Delete")
               color: theme.palette.normal.negative
 
               onClicked: {
                 PopupUtils.close(deleteDeviceDialog)
-                deleteDevice()
+                Devices.deleteDevice(selectedIndex, selectedMac);
               }
           }
 
           Button {
-              text: "Cancel"
+              text: i18n.tr("Cancel")
 
               onClicked: {
                 PopupUtils.close(deleteDeviceDialog)
@@ -139,43 +149,4 @@ Page {
           }
         }
       }
-
-      Component {
-        id: deletingDeviceDialogComponent
-        Dialog {
-          id: deletingDeviceDialog
-          title: i18n.tr("Deleting device")
-          text: i18n.tr("Trying to delete the device " + selectedDevice)
-        }
-      }
-
-    Component.onCompleted: listDevices(StandardPaths.writableLocation(StandardPaths.AppDataLocation))
-
-    function listDevices(appDataPath) {
-      if(newFirmware != "" && newMAC != "") {
-        welcomeListModel.append({firmware: newFirmware, deviceMAC: newMAC});
-      }
-
-      python.call('uwatch.databaseExists', [appDataPath.toString()], function(result) {
-        if(result == true) {
-          python.call('uwatch.getDevices', [appDataPath.toString()], function(devices) {
-            if(devices.length > 0) {
-              devices.forEach((el, i) => welcomeListModel.append({firmware: el[0], deviceMAC: el[1]}));
-            }
-          });
-        }
-      });
-    }
-
-    function deleteDevice() {
-      python.call('uwatch.unpairDevice', [selectedDevice], function(result) {
-        if(result == true) {
-          python.call('uwatch.deleteDevice', [selectedDevice], function(deleted) {
-            if(deleted == true) {
-              welcomeListModel.remove(selectedIndex)
-            }
-          })
-        }
-      })
-    }
 }

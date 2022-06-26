@@ -13,10 +13,15 @@ connected = 'info'
 disconnect = 'disconnect'
 pair = 'pair'
 remove = 'remove'
+agent = 'agent KeyboardOnly'
 
 
 def get_backend():
     return [backend]
+
+
+def set_agent():
+    return [agent]
 
 
 def pair_device(mac):
