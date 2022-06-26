@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-05 12:03+0000\n"
+"POT-Creation-Date: 2022-06-26 16:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,43 +17,59 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Pages/AddDevice.qml:23
+#: ../qml/Components/StatsView.qml:95 ../qml/Pages/Device.qml:256
+msgid "Heart rate (Highest)"
+msgstr ""
+
+#: ../qml/Components/StatsView.qml:107 ../qml/Pages/Device.qml:257
+msgid "Steps"
+msgstr ""
+
+#: ../qml/Pages/AddDevice.qml:27
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:45 ../qml/js/Devices.js:20
+#: ../qml/Pages/AddDevice.qml:49 ../qml/js/Devices.js:20
 msgid "Scanning..."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:82
+#: ../qml/Pages/AddDevice.qml:86
 msgid "Pair"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:83
+#: ../qml/Pages/AddDevice.qml:87
 msgid "Are you sure you want to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:106
+#: ../qml/Pages/AddDevice.qml:110
 msgid "Pair device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:107
+#: ../qml/Pages/AddDevice.qml:111
 msgid "Attempting to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:129
+#: ../qml/Pages/AddDevice.qml:140
+msgid "PIN needed"
+msgstr ""
+
+#: ../qml/Pages/AddDevice.qml:141
+msgid "Please enter the PIN displayed on your watch."
+msgstr ""
+
+#: ../qml/Pages/AddDevice.qml:204
 msgid "Pair successful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:130
+#: ../qml/Pages/AddDevice.qml:205
 msgid "Device was successfully paired."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:149
+#: ../qml/Pages/AddDevice.qml:225
 msgid "Pair unsuccessful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:150
+#: ../qml/Pages/AddDevice.qml:226
 msgid "Device could not be paired."
 msgstr ""
 
@@ -78,20 +94,12 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:41 ../qml/Pages/Settings.qml:14
+#: ../qml/Pages/Device.qml:45 ../qml/Pages/Settings.qml:14
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:47 ../qml/Pages/Settings.qml:45
+#: ../qml/Pages/Device.qml:51 ../qml/Pages/Settings.qml:45
 msgid "Sync"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:160
-msgid "Heart rate (Highest)"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:172
-msgid "Steps"
 msgstr ""
 
 #: ../qml/Pages/Settings.qml:61
