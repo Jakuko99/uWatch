@@ -117,7 +117,7 @@
         "Name": "Battery Level",
         "Type": "Characteristic",
         "UUID": "00002a19-0000-1000-8000-00805f9b34fb",
-        "Handle": "0x004f",
+        "Handle": "0x0054",
         "Parent": "Battery Service",
         "ValidSinceFirmware": "0.1"
     },
