@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-26 17:02+0000\n"
+"POT-Creation-Date: 2022-06-26 21:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../qml/Pages/About.qml:29 ../qml/Pages/Welcome.qml:31
+msgid "About"
+msgstr ""
+
+#: ../qml/Pages/About.qml:100
+msgid "Version"
+msgstr ""
+
+#: ../qml/Pages/About.qml:145
+msgid "Developer"
+msgstr ""
+
+#: ../qml/Pages/About.qml:191
+msgid "License"
+msgstr ""
+
+#: ../qml/Pages/About.qml:263
+msgid "Help translate the app"
+msgstr ""
 
 #: ../qml/Pages/AddDevice.qml:27
 msgid "Add device"
@@ -86,24 +106,28 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:45 ../qml/Pages/Settings.qml:14
+#: ../qml/Pages/Device.qml:45 ../qml/Pages/Settings.qml:16
 msgid "Settings"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:51 ../qml/Pages/Settings.qml:45
-msgid "Sync"
+#: ../qml/Pages/Device.qml:52
+msgid "Connect"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:256
+#: ../qml/Pages/Device.qml:261
 msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:257
+#: ../qml/Pages/Device.qml:262
 msgid "Steps"
 msgstr ""
 
-#: ../qml/Pages/Settings.qml:61
-msgid "Sync watch after it connected"
+#: ../qml/Pages/Settings.qml:47
+msgid "Sync"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:64
+msgid "Sync with watch when pulling to refresh"
 msgstr ""
 
 #: ../qml/Pages/StatDetails.qml:58
@@ -124,10 +148,6 @@ msgstr ""
 
 #: ../qml/Pages/StatDetails.qml:125 ../qml/Pages/Welcome.qml:134
 msgid "Delete"
-msgstr ""
-
-#: ../qml/Pages/Welcome.qml:31
-msgid "About"
 msgstr ""
 
 #: ../qml/Pages/Welcome.qml:70

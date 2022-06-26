@@ -37,6 +37,8 @@ MainView {
         property bool initializeAtStart: true
         property bool migrationRan: false
         property bool databaseMigrated: false
+
+        property bool syncAtPull: true
     }
 
     PageStack {

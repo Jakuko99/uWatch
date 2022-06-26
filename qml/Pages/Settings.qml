@@ -49,18 +49,35 @@ Page {
       }
 
       Label {
-        id: settingsSyncAtStartLabel
+        id: settingsSyncAtPullLabel
 
         anchors {
           left: parent.left
           top: settingsSyncTitleLabel.bottom
-          topMargin: units.gu(2)
-          bottomMargin: units.gu(2)
-          leftMargin: units.gu(2)
-          rightMargin: units.gu(2)
+          right: settingsSyncAtPullSwitch.left
+          topMargin: settings.margin
+          bottomMargin: settings.margin
+          leftMargin: settings.margin
+          rightMargin: settings.margin
         }
 
-        text: i18n.tr('Sync watch after it connected')
+        text: i18n.tr('Sync with watch when pulling to refresh')
+        wrapMode: Text.Wrap
       }
+
+      Switch {
+        id: settingsSyncAtPullSwitch
+        anchors {
+          right: parent.right
+          top: settingsSyncTitleLabel.bottom
+          topMargin: settings.margin
+          rightMargin: settings.margin
+        }
+
+        checked: settings.syncAtPull
+
+        onClicked: settings.syncAtPull = checked
+      }
+
     }
 }

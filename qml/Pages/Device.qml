@@ -47,22 +47,12 @@ Page {
            onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
           },
           Action {
-            iconName: "sync"
-            text: i18n.tr("Sync")
+            id: connectAction
+            iconName: "preferences-network-bluetooth-disabled-symbolic"
+            text: i18n.tr("Connect")
 
             onTriggered: {
-              python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
-                if(result) {
-                  syncData();
-                } else {
-                  python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
-                    if(connected) {
-                      syncData();
-                    }
-                  })
-                }
-                updateView();
-              });
+              python.call('uwatch.connectDevice', [deviceObject.mac], function() {});
             }
           }
         ]
@@ -140,7 +130,7 @@ Page {
 
       parent: deviceFlickable
       refreshing: deviceColumn.children.length != 3
-      onRefresh: updateView()
+      onRefresh: pullToRefresh();
     }
   }
 
@@ -156,6 +146,21 @@ Page {
     }
 
     updateView();
+  }
+
+  function startSync() {
+    python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
+      if(result) {
+        syncData();
+      } else {
+        python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
+          if(connected) {
+            syncData();
+          }
+        })
+      }
+      updateView();
+    });
   }
 
   function syncData() {
@@ -257,9 +262,15 @@ Page {
     component.createObject(deviceColumn, {title: i18n.tr("Steps"), page: "Steps", values: updateStepsView()});
   }
 
-  function updateFirmwareRevision() {
-    /*python.call('uwatch.syncFirmwareRevision', [root.devices, deviceObject.mac, firmware], function(version) {
+  function pullToRefresh() {
+    updateView();
 
-    })*/
+    if(settings.syncAtPull) {
+      python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
+        if(result) {
+          syncData();
+        }
+      });
+    }
   }
 }
