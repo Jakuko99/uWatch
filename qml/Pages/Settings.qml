@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
 
+import "../Components"
+
 Page {
     id: settingsView
     anchors.fill: parent
