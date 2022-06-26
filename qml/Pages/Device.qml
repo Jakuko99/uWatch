@@ -15,165 +15,132 @@ import "../js/GATT.js" as GATT
 import "../js/Helper.js" as Helper
 
 Page {
-    id: deviceView
-    anchors.fill: parent
+  id: deviceView
+  anchors.fill: parent
 
-    property string json: "{}"
+  property string json: "{}"
 
-    // Device specific variables
-    property var deviceObject: null
+  // Device specific variables
+  property var deviceObject: null
 
-    // Graph stats
-    property var dateArray: []
-    property var heartRateVals: []
-    property var stepsVals: updateStepsView()
+  // Graph stats
+  property var dateArray: []
+  property var heartRateVals: []
+  property var stepsVals: []
 
-    header: BaseHeader{
-        id: deviceViewHeader
-        title: deviceObject.firmware + ' ' + deviceObject.firmwareVersion
+  property string battery: DB.readLastByDate("battery", deviceObject.mac, Helper.getToday())
+  property string heartrate: DB.readLastByDate("heartrate", deviceObject.mac, Helper.getToday())
+  property string steps: DB.readSumByDate("steps", deviceObject.mac, Helper.getToday())
 
-        flickable: deviceFlickable
+  header: BaseHeader{
+      id: deviceViewHeader
+      title: deviceObject.firmware + ' ' + deviceObject.firmwareVersion
 
-        trailingActionBar {
-           actions: [
-            Action {
-             iconName: "settings"
-             text: i18n.tr("Settings")
+      flickable: deviceFlickable
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
-            },
-            Action {
-              iconName: "sync"
-              text: i18n.tr("Sync")
+      trailingActionBar {
+         actions: [
+          Action {
+           iconName: "settings"
+           text: i18n.tr("Settings")
 
-              onTriggered: {
-                python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
-                  if(result) {
-                    syncData();
-                  } else {
-                    python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
-                      if(connected) {
-                        syncData();
-                      }
-                    })
-                  }
-                })
-              }
+           onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
+          },
+          Action {
+            iconName: "sync"
+            text: i18n.tr("Sync")
+
+            onTriggered: {
+              python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
+                if(result) {
+                  syncData();
+                } else {
+                  python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
+                    if(connected) {
+                      syncData();
+                    }
+                  })
+                }
+                updateView();
+              });
             }
-          ]
-        }
-    }
+          }
+        ]
+      }
+  }
 
-    ScrollView {
-      width: parent.width
-      height: parent.height
-      contentItem: deviceFlickable
-    }
+  ScrollView {
+    width: parent.width
+    height: parent.height
+    contentItem: deviceFlickable
+  }
 
-    Flickable {
-      id: deviceFlickable
+  Flickable {
+    id: deviceFlickable
 
-      width: parent.width
-      height: parent.height
+    property bool refreshing: true
 
-      contentHeight: deviceColumn.height + settings.margin*2
+    width: parent.width
+    height: parent.height
 
-      Column {
-        id: deviceColumn
+    contentHeight: deviceColumn.height + settings.margin * 2
+
+    Column {
+      id: deviceColumn
+
+      anchors {
+        left: parent.left
+        right: parent.right
+        top: parent.top
+        topMargin: settings.margin
+        leftMargin: settings.margin
+        rightMargin: settings.margin
+        bottomMargin: units.gu(4)
+      }
+
+      spacing: settings.margin
+
+      Row {
+        id: deviceStatsView
 
         anchors {
           left: parent.left
           right: parent.right
-          top: parent.top
-          topMargin: settings.margin
-          leftMargin: settings.margin
-          rightMargin: settings.margin
-          bottomMargin: units.gu(4)
         }
 
-        spacing: settings.margin
+        height: units.gu(7)
 
-        Row {
-          id: deviceStatsView
+        StatsRectangle {
+          id: batteryLevel
 
-          anchors {
-            left: parent.left
-            right: parent.right
-          }
-
-          height: units.gu(7)
-
-          StatsRectangle {
-
-            StatsIcon {
-              iconName: "battery_full"
-            }
-
-            StatsLabel {
-              id: batteryLevelLabel
-              labelText: DB.readLastByDate("battery", deviceObject.mac, Helper.getToday()) + " %"
-            }
-          }
-
-          StatsRectangle {
-
-            StatsIcon {
-              iconName: "like"
-            }
-
-            StatsLabel {
-              id: heartRateLabel
-              labelText: DB.readLastByDate("heartrate", deviceObject.mac, Helper.getToday())
-            }
-          }
-
-          /*StatsRectangle {
-
-            StatsIcon {
-              iconName: "timer"
-            }
-
-            StatsLabel {
-              labelText: settings.calorieLevel
-            }
-          }*/
-
-          StatsRectangle {
-
-            StatsIcon {
-              iconName: "transfer-progress"
-            }
-
-            StatsLabel {
-              id: stepsLabel
-              labelText: DB.readLastByDate("steps", deviceObject.mac, Helper.getToday())
-            }
-          }
+          icon: "battery_full"
+          text: battery + " %"
         }
 
+        StatsRectangle {
+          id: heartRateLevel
 
-        Graph {
-          id: heartRateGraph
-
-          title: i18n.tr("Heart rate (Highest)")
-          page: "Heart rate"
-
-          width: deviceView.width - units.gu(4)
-
-          values: heartRateVals
+          icon: "like"
+          text: heartrate
         }
 
-        // Display steps graph as steps can be manually added
-        Graph {
-          id: stepsGraph
+        StatsRectangle {
+          id: stepsLevel
 
-          title: i18n.tr("Steps")
-          page: "Steps"
-
-          width: deviceView.width - units.gu(4)
-
-          values: stepsVals
+          icon: "transfer-progress"
+          text: steps
         }
+      }
+    }
+
+    PullToRefresh {
+      id: devicePullToRefresh
+
+      property int columnLength: deviceColumn.children.length
+
+      parent: deviceFlickable
+      refreshing: deviceColumn.children.length != 3
+      onRefresh: updateView()
     }
   }
 
@@ -182,6 +149,7 @@ Page {
       python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
         if(connected) {
           Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
+          console.log("Firmware version", DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion);
           deviceObject.firmwareVersion = DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion;
         }
       })
@@ -203,87 +171,90 @@ Page {
      deviceObject.firmwareVersion,
      firmwareObject.ValidSinceFirmware,
      firmwareObject.UUID,
-     "big-endian"], function(result) {
-       console.log(result);
+     "big-endian", "string"], function(result) {
+       if(result != deviceObject.firmwareVersion) {
+         DB.update(deviceObject.id, "watches", "firmwareVersion", result);
+         deviceObject.id = result;
+       }
     });
     python.call('uwatch.readValue', [deviceObject.mac,
      deviceObject.firmwareVersion,
      batteryObject.ValidSinceFirmware,
      batteryObject.UUID,
-     "big-endian"], function(result) {
-       console.log(result);
+     "big-endian", "int"], function(result) {
+       DB.writeStats("battery", [new Date().toISOString(), deviceObject.mac, result]);
+       deviceView.battery = result;
     });
 
-    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, batteryObject.ValidSinceFirmware, batteryObject.UUID, "big-endian"],  function(result) {
-       console.log(result);
+    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, heartrateObject.ValidSinceFirmware, heartrateObject.UUID, "big-endian", "int"],  function(result) {
+      if(result != 0) {
+        DB.writeStats("heartrate", [new Date().toISOString(), deviceObject.mac, result]);
+        deviceView.heartrate = result;
+      }
     });
 
-    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, stepsObject.ValidSinceFirmware, stepsObject.UUID, "big-endian"],  function(result) {
-       console.log(result);
+    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, stepsObject.ValidSinceFirmware, stepsObject.UUID, "little-endian", "int"],  function(result) {
+      let value = result - DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
+
+      if(value > 0) {
+        DB.writeStats("steps", [new Date().toISOString(), deviceObject.mac, value]);
+      }
+
+      deviceView.steps = DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
     });
 
     updateView();
   }
 
   function updateHeartRateView() {
-    heartRateVals = []
-
-    // Get the date range for which to fetch data from the database
-    python.call('uwatch.getISODateArray', [7], function(result) {
-
-      // Fetch all database entries for the date and get the max value
-      for(let i = 0; i < result.length; i++) {
-        //let values = DB.readByDate("heartrate", result[i]);
-        if(values.length > 0) {
-          heartRateVals.push(Math.max.apply(Math, values.value));
-        } else {
-          heartRateVals.push(0);
-        }
-        /*python.call('uwatch.getHeartRateForDate', [deviceObject.mac, result[i]], function(result) {
-          if(result.length >0) {
-            tvalues.push(Math.max.apply(Math, result))
-          } else {
-            tvalues.push(0)
-          }
-          heartRateVals = tvalues
-        })*/
-      }
-    })
-
-  }
-
-  function updateStepsView() {
-    stepsVals = []
-
-    /*python.call('uwatch.getISODateArray', [1], function(result) {
-      python.call('uwatch.getStepsForDate', [deviceObject.mac, result[0]], function(result) {
-        stepsLabel.labelText = result
-      })
-    })*/
+    let heartrates = []
 
     let weekdays = Helper.getWeek("long");
 
     for(let i = 0; i < weekdays.length; i++) {
-      let values = DB.readByDate("steps", deviceObject.mac, weekdays[i]);
-      var valuesArray = [];
+      let values = DB.readByDate("heartrate", deviceObject.mac, weekdays[i]);
+      let valuesArray = [];
 
       for(let j = 0; j < values.length; j++) {
         valuesArray.push(values.item(j).value);
       }
 
       if(valuesArray.length > 0) {
-        stepsVals.push(Math.max.apply(Math, valuesArray));
+        heartrates.push(Math.max.apply(Math, valuesArray));
       } else {
-        stepsVals.push(0);
+        heartrates.push(0);
       }
     }
 
-    return stepsVals;
+    return heartrates;
+  }
+
+  function updateStepsView() {
+    let steps = []
+
+    let weekdays = Helper.getWeek("long");
+
+    for(let i = 0; i < weekdays.length; i++) {
+      steps.push(
+          DB.readSumByDate(
+            "steps",
+            deviceObject.mac,
+            weekdays[i]
+          )
+      );
+    }
+
+    return steps
   }
 
   function updateView() {
-    //updateHeartRateView()
-    updateStepsView()
+    for(let i = 1; i < deviceColumn.children.length; i++) {
+      deviceColumn.children[i].destroy();
+    }
+
+    let component = Qt.createComponent("../Components/Chart.qml")
+    component.createObject(deviceColumn, {title: i18n.tr("Heart rate (Highest)"), page: "Heart rate", values: updateHeartRateView()});
+    component.createObject(deviceColumn, {title: i18n.tr("Steps"), page: "Steps", values: updateStepsView()});
   }
 
   function updateFirmwareRevision() {
