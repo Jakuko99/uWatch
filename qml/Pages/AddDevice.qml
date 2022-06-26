@@ -9,6 +9,7 @@ import QtBluetooth 5.9
 import "../Components"
 import "../js/Database.js" as DB
 import "../js/Devices.js" as Devices
+import "../js/GATT.js" as GATT
 
 Page {
     id: addDeviceView
@@ -110,7 +111,7 @@ Page {
         text: i18n.tr("Attempting to pair with") + " " + addDeviceView.selectedMAC
 
         Component.onCompleted: {
-          python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
+          /*python.call('uwatch.pairDevice', [addDeviceView.selectedMAC], function(result) {
             PopupUtils.close(attemptPairDialog)
             if(result) {
               DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
@@ -118,7 +119,80 @@ Page {
             } else {
               PopupUtils.open(pairUnsuccessfulDialogComponent)
             }
+          })*/
+          python.call('uwatch.requestPair', [addDeviceView.selectedMAC], function(result) {
+            PopupUtils.close(attemptPairDialog)
+            if(result) {
+              //DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
+              PopupUtils.open(pairCodeDialogComponent)
+            } else {
+              PopupUtils.open(pairUnsuccessfulDialogComponent)
+            }
           })
+        }
+      }
+    }
+
+    Component {
+      id: pairCodeDialogComponent
+      Dialog {
+        id: pairCodeDialog
+        title: i18n.tr("PIN needed")
+        text: i18n.tr("Please enter the PIN displayed on your watch.")
+
+        Rectangle {
+          TextField {
+            id: pinTextField
+            anchors {
+              top: parent.top
+              left: parent.left
+              right: parent.right
+            }
+          }
+
+          Button {
+            anchors {
+              top: pinTextField.bottom
+              left: parent.left
+              topMargin: units.gu(1)
+            }
+
+            width: parent.width / 2 -units.gu(1)
+
+            text: "Cancel"
+
+            /*onClicked: {
+              PopupUtils.close(pairSuccessfulDialog)
+
+              let newWatch = DB.readByMAC("watches", addDeviceView.selectedMAC);
+              listModel.append({deviceObject: newWatch.rows.item(0)})
+              pageStack.pop()
+            }*/
+          }
+
+          Button {
+            anchors {
+              top: pinTextField.bottom
+              right: parent.right
+              topMargin: units.gu(1)
+            }
+
+            width: parent.width / 2 -units.gu(1)
+
+            text: "Send"
+
+            onClicked: {
+              python.call('uwatch.confirmPair', [addDeviceView.selectedMAC, pinTextField.text], function(result) {
+                PopupUtils.close(pairCodeDialog)
+                if(result) {
+                  DB.createWatch([addDeviceView.selectedMAC, "", addDeviceView.selectedFirmware, ""])
+                  PopupUtils.open(pairSuccessfulDialogComponent)
+                } else {
+                  PopupUtils.open(pairUnsuccessfulDialogComponent)
+                }
+              })
+            }
+          }
         }
       }
     }

@@ -47,6 +47,14 @@ def add_device():
     return devices
 
 
+def requestPair(mac):
+    return uGatt.requestPair(mac)
+
+
+def confirmPair(mac, code):
+    return uGatt.confirmPair(mac, code)
+
+
 def pairDevice(mac):
     return uGatt.pair(mac)
 
