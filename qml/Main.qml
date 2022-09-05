@@ -38,12 +38,21 @@ MainView {
         property bool migrationRan: false
         property bool databaseMigrated: false
 
+        property bool displayUnsupportedDevices: false
         property bool syncAtPull: true
+        property int syncInterval: 15
     }
 
     PageStack {
       id: pageStack
-      Component.onCompleted: pageStack.push(Qt.resolvedUrl("./Pages/Welcome.qml"))
+      Component.onCompleted: {
+        // Init uGatt
+        python.call('uwatch.initialize', [], function(result) {
+          result ? console.log("Bluetooth backend initialized") : console.log("Could not initialize the bluetooth backend")
+        })
+
+        pageStack.push(Qt.resolvedUrl("./Pages/Welcome.qml"))
+      }
     }
 
     Python {
@@ -64,10 +73,16 @@ MainView {
     Component.onCompleted: {
       DB.openDatabase();
       Helper.migrateDatabase(StandardPaths.writableLocation(StandardPaths.AppDataLocation));
-
-      // Init uGatt
-      python.call('uwatch.initialize', [], function(result) {
-
-      })
     }
+
+    /*Timer {
+      interval: settings.syncInterval*60*1000; running: true; repeat: true
+      onTriggered: console.log("Timer triggered");
+
+      Component.onCompleted: {
+        if(settings.syncInterval == 0) {
+          running = false;
+        }
+      }
+    }*/
 }
