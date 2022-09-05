@@ -46,3 +46,15 @@ function getUUIDObject(gattObject, name) {
 
   return null;
 }
+
+function formatInput(input) {
+  let retVal = ""
+
+  if(input.length > 1) {
+    for (let i=0; i < input.length; i++) {
+      retVal += '0x' + input[i] + ' ';
+    }
+  }
+
+  return retVal;
+}

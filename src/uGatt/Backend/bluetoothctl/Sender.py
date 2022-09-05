@@ -7,7 +7,8 @@ read_attribute = 'read'
 write_attribute = 'write'
 scan_start = 'scan on'
 scan_stop = 'scan off'
-paired_devices = 'info'
+paired_device = 'info'
+paired_devices = 'paired-devices'
 connect = 'connect'
 connected = 'info'
 disconnect = 'disconnect'
@@ -29,7 +30,11 @@ def pair_device(mac):
 
 
 def device_paired(mac):
-    return [paired_devices + " " + mac]
+    return [paired_device + " " + mac]
+
+
+def get_paired_devices():
+    return paired_devices
 
 
 def unpair_device(mac):
@@ -49,11 +54,11 @@ def disconnect_device(mac):
 
 
 def read(uuid):
-    return [enable_gatt_commands] + [use_attribute + " " + uuid] + [read_attribute] + [quit_gatt]
+    return [enable_gatt_commands + "\n"] + [use_attribute + " " + uuid + "\n"] + [read_attribute + "\n"] + [quit_gatt + "\n"]
 
 
 def write(dataset):
-    return [enable_gatt_commands] + [use_attribute + " " + dataset[0]] + [write_attribute + ' "' + dataset[1] + '"'] + [quit_gatt]
+    return [enable_gatt_commands + "\n"] + [use_attribute + " " + dataset[0] + "\n"] + [write_attribute + ' "' + dataset[1] + '"' + "\n"] + [quit_gatt + "\n"]
 
 
 def start_scan():

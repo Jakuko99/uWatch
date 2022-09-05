@@ -1,9 +1,23 @@
 function listDevices() {
-  let devices = DB.readAll("watches");
+  python.call('uwatch.getPairedDevices', [], function(devices) {
+    if(devices.length > 0) {
+      for (var i = 0; i < devices.length; i++) {
+        let deviceArray = devices[i].split(" ")
 
-  for (var i = 0; i < devices.rows.length; i++) {
-    welcomeListModel.append({deviceObject: devices.rows.item(i)});
-  }
+        if(!settings.displayUnsupportedDevices && GATT.getAvailableFirmware("../assets/devices/firmware/" + deviceArray[2].toLowerCase() + ".json")) {
+          if(DB.readByMAC("watches", deviceArray[1]).rows.length == 0) {
+            DB.createWatch([deviceArray[1], " ", deviceArray[2], " "]);
+          }
+          welcomeListModel.append({deviceObject: DB.readByMAC("watches", deviceArray[1]).rows.item(0)});
+        } else if (settings.displayUnsupportedDevices) {
+          if(DB.readByMAC("watches", deviceArray[1]).rows.length == 0) {
+            DB.createWatch([deviceArray[1], " ", deviceArray[2], " "]);
+          }
+          welcomeListModel.append({deviceObject: DB.readByMAC("watches", deviceArray[1]).rows.item(0)});
+        }
+      }
+    }
+  })
 }
 
 function deleteDevice(index, mac) {

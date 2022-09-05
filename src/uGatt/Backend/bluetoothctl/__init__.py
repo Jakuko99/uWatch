@@ -7,6 +7,7 @@ from .Sender import connect_device
 from .Sender import device_connected
 from .Sender import disconnect_device
 from .Sender import pair_device
+from .Sender import get_paired_devices
 from .Sender import device_paired
 from .Sender import unpair_device
 from .Sender import read
@@ -20,4 +21,5 @@ from .Receiver import get_pair_successful_filter
 from .Receiver import get_remove_device_filter
 from .Receiver import get_read_value_filter
 from .Receiver import get_device_paired_filter
+from .Receiver import get_paired_devices_filter
 from .Receiver import get_request_pair_filter

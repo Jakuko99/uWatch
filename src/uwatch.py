@@ -55,6 +55,10 @@ def confirmPair(mac, code):
     return uGatt.confirmPair(mac, code)
 
 
+def getPairedDevices():
+    return uGatt.list_paired()
+
+
 def pairDevice(mac):
     return uGatt.pair(mac)
 
@@ -64,7 +68,10 @@ def unpairDevice(mac):
 
 
 def connectDevice(mac):
-    return uGatt.connect(mac)
+    if getConnectionState(mac):
+        return True
+    else:
+        return uGatt.connect(mac)
 
 
 def getConnectionState(mac):
@@ -76,16 +83,14 @@ def getConnectionState(mac):
 ##################
 
 
-def writeValue(mac, currentFirmwareVersion, validFirmwareVersion, identifier):
+def writeValue(mac, currentFirmwareVersion, validFirmwareVersion, identifier, value):
     if compareVersions(currentFirmwareVersion, validFirmwareVersion):
-        if uGatt.getBackend() == "bluetoothctl":
-            uGatt.write_value_uuid(identifier, helper.currentTimeToHex())
-        else:
-            uGatt.write_handle(identifier, helper.currentTimeToHex())
+        uGatt.write_value_uuid(identifier, value)
 
 
 def readValue(mac, currentFirmwareVersion, validFirmwareVersion, uuid, interpreter, type):
     if compareVersions(currentFirmwareVersion, validFirmwareVersion):
+        print(uGatt.read_value(uuid))
         if type == "int":
             val = helper.parseToInt(uGatt.read_value(uuid), interpreter)
         else:

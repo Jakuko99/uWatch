@@ -11,6 +11,9 @@ class process_worker(threading.Thread):
         threading.Thread.__init__(self)
         self.process = process
         self.expect = []
+        self.input = []
+        self.waiting_input = False
+        self.waiting_input_timeout = 10000
         self.not_expect = []
         self.errorList = []
         self.out = []
@@ -19,6 +22,17 @@ class process_worker(threading.Thread):
 
     def run(self):
         while True:
+            # Wait for input if input is expected and timeout not reached
+            while self.waiting_input and self.waiting_input_timeout != 0:
+                self.waiting_input_timeout -= 1
+
+                # Stop waiting if timeout is reached. Loop will stop when
+                # timeout reaches 0 but to avoid possible problems, set waiting
+                # to false
+                if self.waiting_input_timeout == 0:
+                    self.waiting_input = False
+                    print("Stop waiting for input because of timeout.")
+
             output = self.process.stdout.readline()
             if self.process.poll() is not None:
                 break
@@ -55,8 +69,15 @@ class process_worker(threading.Thread):
         try:
             for line in input:
                 self.process.stdin.write(line)
-                if linebreak:
-                    self.process.stdin.write('\n')
+
+            if linebreak:
+                self.process.stdin.write('\n')
+
+            if self.waiting_input:
+                # Reset expecting input and input timeout if it is set.
+                self.waiting_input = False
+                self.waiting_input_timeout = 10000
+                print("Starting to wait for input with timeout of", self.waiting_input_timeout)
         except IOError as e:
             if e.errno == errno.EPIPE or e.errno == errno.EINVAL:
                 # Stop loop on "Invalid pipe" or "Invalid argument".
@@ -65,6 +86,10 @@ class process_worker(threading.Thread):
             else:
                 # Raise any other error.
                 raise "Error"
+
+    def wait_for_input(self, timeout):
+        self.waiting_input = True
+        self.waiting_input_timeout = timeout
 
     def expect_output(self, arr):
         self.expect = arr

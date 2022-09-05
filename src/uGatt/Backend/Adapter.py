@@ -34,26 +34,16 @@ def set_backend():
     ###
     version = listener.get_output()[0].split(' ')[1]
     print("Ver: " + version)
-    if float(version) < 5.48:
-        backend = "gatttool"
-        return load_gatttool_backend()
-    else:
+    if float(version) >= 5.48:
         backend = "bluetoothctl"
         return load_bluetoothctl_backend()
+    else:
+        return False
+
 
 
 def get_backend_exec():
     return backend
-
-
-def load_gatttool_backend():
-    try:
-        global get_backend
-        from .gatttool import get_backend
-        return True
-    except:
-        print("could not import backend")
-        return False
 
 
 def load_bluetoothctl_backend():

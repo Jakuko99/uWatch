@@ -115,3 +115,21 @@ function getMaxValue(values) {
 
   return max;
 }
+
+function currentTimeToHex() {
+  let currentDate = new Date();
+  let year = currentDate.getFullYear().toString(16).padStart(4, '0');
+  let month = (currentDate.getMonth()+1).toString(16).padStart(2, '0');
+  let day = currentDate.getDate().toString(16).padStart(2, '0');
+  let hour = currentDate.getHours().toString(16).padStart(2, '0');
+  let minute = currentDate.getMinutes().toString(16).padStart(2, '0');
+  let second = currentDate.getSeconds().toString(16).padStart(2, '0');
+  let microsecond = parseInt(currentDate.getMilliseconds() * 1000 / (1e6*256),10).toString(16).padStart(2, '0');
+  let binary = "0001".toString(16)
+
+  return [year.substring(2,4), year.substring(0,2), month, day, hour, minute, second, microsecond, binary];
+}
+
+function sleep(ms) {
+  for(let i = 0; i < ms; i++){}
+}

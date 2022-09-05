@@ -9,6 +9,7 @@ import Ubuntu.Components.Popups 1.3
 import QtQuick.LocalStorage 2.0
 import "../Components"
 import "../js/Database.js" as DB
+import "../js/GATT.js" as GATT
 import "../js/Devices.js" as Devices
 
 Page {
@@ -27,16 +28,16 @@ Page {
         trailingActionBar {
            actions: [
             Action {
-              iconName: "info"
-              text: i18n.tr("About")
+             iconName: "settings"
+             text: i18n.tr("Settings")
 
-              onTriggered: pageStack.push(Qt.resolvedUrl("About.qml"))
+             onTriggered: pageStack.push(Qt.resolvedUrl("Settings.qml"))
             },
             Action {
              iconName: "add"
              text: "Add device"
 
-             onTriggered: pageStack.push(Qt.resolvedUrl("AddDevice.qml"), {listModel: welcomeListModel})
+             onTriggered: Qt.openUrlExternally("settings://system/bluetooth")
             }
           ]
         }
@@ -88,6 +89,17 @@ Page {
     }
 
     Component.onCompleted: Devices.listDevices();
+
+    PullToRefresh {
+      id: devicesPullToRefresh
+
+      parent: welcomeListView
+      refreshing: welcomeListView.count === 0
+      onRefresh: {
+        welcomeListModel.clear();
+        Devices.listDevices();
+      }
+    }
 
     ListModel {
         id: welcomeListModel

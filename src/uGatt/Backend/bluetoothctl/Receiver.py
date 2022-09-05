@@ -2,9 +2,10 @@ new_devices = ["NEW"]
 connection_success = ["Connection successful"]
 connected = ["Connected: yes"]
 disconnect_success = ["Successful disconnected"]
-request_pair = ["Request passkey"]
+request_pair = ["Enter passkey"]
 pair_successful = ["Pairing successful"]
 device_paired = ["Paired: yes"]
+paired_devices = ["Device "]
 remove_device = ["Device has been removed"]
 read_value = ["\x1b[K  "]
 write_value = []
@@ -28,6 +29,10 @@ def get_disconnect_success_filter():
 
 def get_device_paired_filter():
     return device_paired
+
+
+def get_paired_devices_filter():
+    return paired_devices
 
 
 def get_request_pair_filter():
