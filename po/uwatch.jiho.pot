@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-26 21:24+0000\n"
+"POT-Creation-Date: 2022-09-05 22:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Pages/About.qml:29 ../qml/Pages/Welcome.qml:31
+#: ../qml/Pages/About.qml:29 ../qml/Pages/Settings.qml:25
 msgid "About"
 msgstr ""
 
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Add device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:49 ../qml/js/Devices.js:20
+#: ../qml/Pages/AddDevice.qml:49 ../qml/js/Devices.js:34
 msgid "Scanning..."
 msgstr ""
 
@@ -53,35 +53,35 @@ msgstr ""
 msgid "Are you sure you want to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:110
+#: ../qml/Pages/AddDevice.qml:111
 msgid "Pair device"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:111
+#: ../qml/Pages/AddDevice.qml:112
 msgid "Attempting to pair with"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:140
+#: ../qml/Pages/AddDevice.qml:141
 msgid "PIN needed"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:141
+#: ../qml/Pages/AddDevice.qml:142
 msgid "Please enter the PIN displayed on your watch."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:204
+#: ../qml/Pages/AddDevice.qml:205
 msgid "Pair successful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:205
+#: ../qml/Pages/AddDevice.qml:206
 msgid "Device was successfully paired."
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:225
+#: ../qml/Pages/AddDevice.qml:226
 msgid "Pair unsuccessful"
 msgstr ""
 
-#: ../qml/Pages/AddDevice.qml:226
+#: ../qml/Pages/AddDevice.qml:227
 msgid "Device could not be paired."
 msgstr ""
 
@@ -102,31 +102,35 @@ msgid "Add"
 msgstr ""
 
 #: ../qml/Pages/AddValue.qml:139 ../qml/Pages/StatDetails.qml:135
-#: ../qml/Pages/Welcome.qml:144
+#: ../qml/Pages/Welcome.qml:156
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:45 ../qml/Pages/Settings.qml:16
-msgid "Settings"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:52
-msgid "Connect"
-msgstr ""
-
-#: ../qml/Pages/Device.qml:261
+#: ../qml/Pages/Device.qml:266
 msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:262
+#: ../qml/Pages/Device.qml:267
 msgid "Steps"
 msgstr ""
 
-#: ../qml/Pages/Settings.qml:47
+#: ../qml/Pages/Settings.qml:17 ../qml/Pages/Welcome.qml:32
+msgid "Settings"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:86
+msgid "General"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:103
+msgid "Display unsupported devices in device list"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:144
 msgid "Sync"
 msgstr ""
 
-#: ../qml/Pages/Settings.qml:64
+#: ../qml/Pages/Settings.qml:160
 msgid "Sync with watch when pulling to refresh"
 msgstr ""
 
@@ -146,27 +150,27 @@ msgstr ""
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
-#: ../qml/Pages/StatDetails.qml:125 ../qml/Pages/Welcome.qml:134
+#: ../qml/Pages/StatDetails.qml:125 ../qml/Pages/Welcome.qml:146
 msgid "Delete"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:70
+#: ../qml/Pages/Welcome.qml:71
 msgid "No watches yet!"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:82
+#: ../qml/Pages/Welcome.qml:83
 msgid "To start, just click on '+' in the top bar"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:130
+#: ../qml/Pages/Welcome.qml:142
 msgid "Delete device"
 msgstr ""
 
-#: ../qml/Pages/Welcome.qml:131
+#: ../qml/Pages/Welcome.qml:143
 msgid "Are you sure you want to delete this device?"
 msgstr ""
 
-#: ../qml/js/Devices.js:25
+#: ../qml/js/Devices.js:39
 msgid "Could not find any devices."
 msgstr ""
 
