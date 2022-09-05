@@ -31,15 +31,10 @@ def parseToInt(value, endian):
 
 
 def parseOutput(output, endian):
-    value = output[0]
-    if getBackend == "bluetoothctl":
-        value = value.split("\x1b[K ")[1].replace("]", "").strip()
-    else:
-        value = value.split("value: ")[1]
+    value = output[0].replace("\x1b[K ", "").split("    ")[0].strip()
 
     if endian == "little-endian":
         value = ''.join(reverseList(value.split(" ")))
-        print(value)
         return value
     else:
         return value.replace(" ", "")
