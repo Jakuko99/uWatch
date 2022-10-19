@@ -23,6 +23,8 @@ Page {
   // Device specific variables
   property var deviceObject: null
 
+  property bool syncing: false
+
   // Graph stats
   property var dateArray: []
   property var heartRateVals: []
@@ -57,6 +59,18 @@ Page {
           }
         ]
       }*/
+  }
+
+  ProgressBar {
+    id: indeterminateBar
+    anchors {
+      left: parent.left
+      right: parent.right
+      bottom: parent.bottom
+      bottomMargin: 5
+    }
+
+    indeterminate: true
   }
 
   ScrollView {
@@ -136,10 +150,15 @@ Page {
 
   Component.onCompleted: {
     if(deviceObject.firmwareVersion == " ") {
+      indeterminateBar.visible = true;
       python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
         if(connected) {
           Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
-          deviceObject.firmwareVersion = DB.read("watches", deviceObject.id).rows.item(0).firmwareVersion;
+          delay(4000, function() {
+            indeterminateBar.visible = false;
+            deviceObject.firmwareVersion = DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
+            deviceViewHeader.title= deviceObject.firmware + ' ' + DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
+          })
         }
       })
     }
@@ -148,6 +167,7 @@ Page {
   }
 
   function startSync() {
+    indeterminateBar.visible = true;
     python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
       if(result) {
         syncData();
@@ -265,6 +285,8 @@ Page {
     let component = Qt.createComponent("../Components/Chart.qml")
     component.createObject(deviceColumn, {title: i18n.tr("Heart rate (Highest)"), page: "Heart rate", values: updateHeartRateView()});
     component.createObject(deviceColumn, {title: i18n.tr("Steps"), page: "Steps", values: updateStepsView()});
+
+    //indeterminateBar.visible = false;
   }
 
   function pullToRefresh() {
@@ -277,5 +299,16 @@ Page {
         }
       });
     }
+  }
+
+  Timer {
+      id: timer
+  }
+
+  function delay(delayTime, cb) {
+      timer.interval = delayTime;
+      timer.repeat = false;
+      timer.triggered.connect(cb);
+      timer.start();
   }
 }
