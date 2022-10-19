@@ -70,6 +70,8 @@ Page {
       bottomMargin: 5
     }
 
+    visible: false
+
     indeterminate: true
   }
 
