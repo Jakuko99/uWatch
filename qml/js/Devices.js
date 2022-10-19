@@ -50,6 +50,8 @@ function getInitialDeviceData(id, mac, firmware) {
    firmwareObject.ValidSinceFirmware,
    firmwareObject.UUID,
    "big-endian", "string"], function(result) {
-     DB.update(id, "watches", "firmwareVersion", result);
+     if(result != null) {
+      DB.update(id, "watches", "firmwareVersion", result);
+     }
   });
 }
