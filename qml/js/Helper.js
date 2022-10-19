@@ -69,12 +69,12 @@ function getWeek(format) {
 
   Date.prototype.formatYYYYMMDD = function(){
     return this.getFullYear() +
-    "-" + (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    "-" + (this.getMonth() < 9 ? '0' : '') + (this.getMonth() + 1) +
     "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
   }
 
   Date.prototype.formatMMDD = function(){
-    return (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    return (this.getMonth() < 9 ? '0' : '') + (this.getMonth() + 1) +
     "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
   }
 
@@ -96,7 +96,7 @@ function getWeek(format) {
 function getToday() {
   Date.prototype.formatYYYYMMDD = function(){
     return this.getFullYear() +
-    "-" + (this.getMonth() < 10 ? '0' : '') + (this.getMonth() + 1) +
+    "-" + (this.getMonth() < 9 ? '0' : '') + (this.getMonth() + 1) +
     "-" +  (this.getDate() < 10 ? '0' : '') + this.getDate();
   }
 
