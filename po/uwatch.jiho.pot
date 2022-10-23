@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: uwatch.jiho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-19 23:25+0000\n"
+"POT-Creation-Date: 2022-10-23 16:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,11 +58,11 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:287
+#: ../qml/Pages/Device.qml:234
 msgid "Heart rate (Highest)"
 msgstr ""
 
-#: ../qml/Pages/Device.qml:288
+#: ../qml/Pages/Device.qml:235
 msgid "Steps"
 msgstr ""
 
@@ -84,6 +84,18 @@ msgstr ""
 
 #: ../qml/Pages/Settings.qml:160
 msgid "Sync with watch when pulling to refresh"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:189
+msgid "Automatically sync connected watches"
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:226
+msgid "App needs to stay active. This might drain the battery faster."
+msgstr ""
+
+#: ../qml/Pages/Settings.qml:241
+msgid "Sync interval (in Minutes)"
 msgstr ""
 
 #: ../qml/Pages/StatDetails.qml:58
