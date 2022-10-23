@@ -9,8 +9,10 @@ import QtQuick.LocalStorage 2.0
 import Qt.labs.folderlistmodel 2.2
 import "Components"
 
+import "./js/GATT.js" as GATT
 import "./js/Database.js" as DB
 import "./js/Helper.js" as Helper
+import "./js/Devices.js" as Devices
 
 MainView {
     id: root
@@ -32,6 +34,7 @@ MainView {
         // Theme settings
         readonly property string accentColor: "#c74375"
         readonly property string cardColor: theme.name == "Ubuntu.Components.Themes.SuruDark" ? "#444444" : "#EAE9E7"
+        readonly property string subColor: "#666666"
 
         // Backend Settings
         property bool initializeAtStart: true
@@ -40,6 +43,7 @@ MainView {
 
         property bool displayUnsupportedDevices: false
         property bool syncAtPull: true
+        property bool syncAutomatically: false
         property int syncInterval: 15
     }
 
@@ -63,6 +67,7 @@ MainView {
             addImportPath(Qt.resolvedUrl('../src/uGatt'));
 
             importModule('uwatch', function() {});
+            importModule('uGatt', function() {});
         }
 
         onError: {
@@ -75,14 +80,21 @@ MainView {
       Helper.migrateDatabase(StandardPaths.writableLocation(StandardPaths.AppDataLocation));
     }
 
-    /*Timer {
-      interval: settings.syncInterval*60*1000; running: true; repeat: true
-      onTriggered: console.log("Timer triggered");
+    Timer {
+      id: syncTimer
+
+      interval: settings.syncInterval*60*1000; running: settings.syncAutomatically; repeat: true
+      onTriggered: {
+        console.log("Syncing");
+        Devices.syncDevices();
+      }
 
       Component.onCompleted: {
         if(settings.syncInterval == 0) {
+          syncTimer.stop();
           running = false;
+          console.log("Disabled automatic sync");
         }
       }
-    }*/
+    }
 }

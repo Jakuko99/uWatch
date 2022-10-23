@@ -77,6 +77,15 @@ def connectDevice(mac):
 def getConnectionState(mac):
     return uGatt.is_connected(mac)
 
+def getConnectedDevices():
+    result = uGatt.connected_devices()
+    devices = []
+    for device in result:
+        if "Device" in device:
+            t = device.split("Device ")[1]
+            devices.append([t[0:17].strip(), t[17:len(t)].strip()])
+
+    return devices
 
 ##################
 # Device actions #

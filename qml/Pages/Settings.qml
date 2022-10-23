@@ -174,12 +174,65 @@ Page {
             onClicked: settings.syncAtPull = checked
           }
 
-          /*Label {
-            id: settingsAutomaticSyncLabel
+          Label {
+            id: settingsAutoSyncLabel
 
             anchors {
               left: parent.left
               top: settingsSyncAtPullLabel.bottom
+              right: settingsSyncAtPullSwitch.left
+              topMargin: settings.margin
+              bottomMargin: settings.margin
+              rightMargin: settings.margin
+            }
+
+            text: i18n.tr('Automatically sync connected watches')
+            wrapMode: Text.Wrap
+          }
+
+          Switch {
+            id: settingsAutoSyncSwitch
+            anchors {
+              right: parent.right
+              top: settingsSyncAtPullLabel.bottom
+              topMargin: settings.margin
+            }
+
+            checked: settings.syncAutomatically
+
+            onClicked: {
+              settings.syncAutomatically = checked
+              if(checked == false) {
+                syncTimer.stop();
+                syncTimer.running = false;
+                console.log("Stopping timer");
+              }
+            }
+          }
+
+          Label {
+            id: settingsAutoSyncWarningLabel
+
+            anchors {
+              left: parent.left
+              top: settingsAutoSyncLabel.bottom
+              right: settingsAutoSyncSwitch.left
+              bottomMargin: settings.margin
+              rightMargin: settings.margin
+            }
+
+            color: settings.subColor
+
+            text: i18n.tr('App needs to stay active. This might drain the battery faster.')
+            wrapMode: Text.Wrap
+          }
+
+          Label {
+            id: settingsAutomaticSyncLabel
+
+            anchors {
+              left: parent.left
+              top: settingsAutoSyncWarningLabel.bottom
               right: settingsAutoSyncIntervalTextField.left
               topMargin: settings.margin
               bottomMargin: settings.margin
@@ -190,14 +243,16 @@ Page {
           }
 
           TextField {
+            id: settingsAutoSyncIntervalTextField
+            
             anchors {
-              top: settingsSyncAtPullLabel.bottom
+              top: settingsAutoSyncWarningLabel.bottom
               right: parent.right
               topMargin: settings.margin
               bottomMargin: settings.margin
             }
 
-            width: units.gu(8)
+            width: units.gu(5)
             height: units.gu(3)
 
             text: settings.syncInterval
@@ -206,7 +261,7 @@ Page {
             hasClearButton: false
 
             onTextChanged: settings.syncInterval = text
-          }*/
+          }
         }
       }
     }

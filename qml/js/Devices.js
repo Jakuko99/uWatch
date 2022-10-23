@@ -41,6 +41,89 @@ function scanDevices() {
   })
 }
 
+function syncDevices() {
+  python.call('uwatch.getConnectedDevices', [], function(devices) {
+    for(let i = 0; i < devices.length; i++) {
+      if(!settings.displayUnsupportedDevices && GATT.getAvailableFirmware("../assets/devices/firmware/" + devices[i][1].toLowerCase() + ".json")) {
+        let device = DB.readByMAC("watches", devices[i][0]).rows.item(0);
+        if(device.firmwareVersion != " ") {
+          syncDevice(device.id, device.mac, device.firmware, device.firmwareVersion, false);
+        }
+      } else if (settings.displayUnsupportedDevices) {
+        let device = DB.readByMAC("watches", devices[i][0]).rows.item(0);
+        if(device.firmwareVersion != " ") {
+          syncDevice(device.id, device.mac, device.firmware, device.firmwareVersion, false);
+        }
+      }
+
+      let wait = 5000;
+      for(let j = 0; j < wait; j++) {}
+    }
+  });
+}
+
+function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
+  let gattobject = GATT.getGATTObject(firmware);
+  let timeObject = GATT.getUUIDObject(gattobject, "Current Time");
+  let firmwareObject = GATT.getUUIDObject(gattobject, "Firmware Revision String");
+  let batteryObject = GATT.getUUIDObject(gattobject, "Battery Level");
+  let heartrateObject = GATT.getUUIDObject(gattobject, "Heart Rate Measurement");
+  let stepsObject = GATT.getUUIDObject(gattobject, "Step count");
+
+  python.call('uwatch.writeValue', [mac, firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.UUID, GATT.formatInput(Helper.currentTimeToHex())], function() {})
+  python.call('uwatch.readValue', [mac,
+   firmwareVersion,
+   firmwareObject.ValidSinceFirmware,
+   firmwareObject.UUID,
+   "big-endian", "string"], function(result) {
+     if(result != firmwareVersion) {
+       DB.update(id, "watches", "firmwareVersion", result);
+
+       if(updateUI) {
+         deviceObject.id = result;
+         deviceView.updateView();
+       }
+     }
+  });
+  python.call('uwatch.readValue', [mac,
+   firmwareVersion,
+   batteryObject.ValidSinceFirmware,
+   batteryObject.UUID,
+   "big-endian", "int"], function(result) {
+     DB.writeStats("battery", [new Date().toISOString(), mac, result]);
+
+     if(updateUI) {
+       deviceView.battery = result;
+       deviceView.updateView();
+     }
+  });
+
+  python.call('uwatch.readValue',  [mac, firmwareVersion, heartrateObject.ValidSinceFirmware, heartrateObject.UUID, "big-endian", "int"],  function(result) {
+    if(result != 0) {
+      DB.writeStats("heartrate", [new Date().toISOString(), mac, result]);
+
+      if(updateUI) {
+        deviceView.heartrate = result;
+
+        deviceView.updateView();
+      }
+    }
+  });
+
+  python.call('uwatch.readValue',  [mac, firmwareVersion, stepsObject.ValidSinceFirmware, stepsObject.UUID, "little-endian", "int"],  function(result) {
+    let value = result - DB.readSumByDate("steps", mac, Helper.getToday());
+
+    if(value > 0) {
+      DB.writeStats("steps", [new Date().toISOString(), mac, value]);
+    }
+
+    if(updateUI) {
+      deviceView.steps = DB.readSumByDate("steps", mac, Helper.getToday());
+      deviceView.updateView();
+    }
+  });
+}
+
 function getInitialDeviceData(id, mac, firmware) {
   let gattobject = GATT.getGATTObject(firmware);
   let firmwareObject = GATT.getUUIDObject(gattobject, "Firmware Revision String");

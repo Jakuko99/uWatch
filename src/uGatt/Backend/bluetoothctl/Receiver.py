@@ -6,6 +6,7 @@ request_pair = ["Enter passkey"]
 pair_successful = ["Pairing successful"]
 device_paired = ["Paired: yes"]
 paired_devices = ["Device "]
+connected_devices = ["Device "]
 remove_device = ["Device has been removed"]
 read_value = ["\x1b[K  "]
 write_value = []
@@ -42,6 +43,8 @@ def get_request_pair_filter():
 def get_pair_successful_filter():
     return pair_successful
 
+def get_connected_devices_filter():
+    return connected_devices
 
 def get_remove_device_filter():
     return remove_device

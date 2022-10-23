@@ -10,9 +10,9 @@ import "../Components/Chart"
 import "../Components/Stats"
 
 import "../js/Database.js" as DB
-import "../js/Devices.js" as Devices
 import "../js/GATT.js" as GATT
 import "../js/Helper.js" as Helper
+import "../js/Devices.js" as Devices
 
 Page {
   id: deviceView
@@ -172,68 +172,14 @@ Page {
     indeterminateBar.visible = true;
     python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
       if(result) {
-        syncData();
+        Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
       } else {
         python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
           if(connected) {
-            syncData();
+            Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
           }
         })
       }
-      updateView();
-    });
-  }
-
-  function syncData() {
-    let gattobject = GATT.getGATTObject(deviceObject.firmware);
-    let timeObject = GATT.getUUIDObject(gattobject, "Current Time");
-    let firmwareObject = GATT.getUUIDObject(gattobject, "Firmware Revision String");
-    let batteryObject = GATT.getUUIDObject(gattobject, "Battery Level");
-    let heartrateObject = GATT.getUUIDObject(gattobject, "Heart Rate Measurement");
-    let stepsObject = GATT.getUUIDObject(gattobject, "Step count");
-
-    python.call('uwatch.writeValue', [deviceObject.mac, deviceObject.firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.UUID, GATT.formatInput(Helper.currentTimeToHex())], function() {})
-    python.call('uwatch.readValue', [deviceObject.mac,
-     deviceObject.firmwareVersion,
-     firmwareObject.ValidSinceFirmware,
-     firmwareObject.UUID,
-     "big-endian", "string"], function(result) {
-       if(result != deviceObject.firmwareVersion) {
-         DB.update(deviceObject.id, "watches", "firmwareVersion", result);
-         deviceObject.id = result;
-
-         updateView();
-       }
-    });
-    python.call('uwatch.readValue', [deviceObject.mac,
-     deviceObject.firmwareVersion,
-     batteryObject.ValidSinceFirmware,
-     batteryObject.UUID,
-     "big-endian", "int"], function(result) {
-       DB.writeStats("battery", [new Date().toISOString(), deviceObject.mac, result]);
-       deviceView.battery = result;
-
-       updateView();
-    });
-
-    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, heartrateObject.ValidSinceFirmware, heartrateObject.UUID, "big-endian", "int"],  function(result) {
-      if(result != 0) {
-        DB.writeStats("heartrate", [new Date().toISOString(), deviceObject.mac, result]);
-        deviceView.heartrate = result;
-
-        updateView();
-      }
-    });
-
-    python.call('uwatch.readValue',  [deviceObject.mac, deviceObject.firmwareVersion, stepsObject.ValidSinceFirmware, stepsObject.UUID, "little-endian", "int"],  function(result) {
-      let value = result - DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
-
-      if(value > 0) {
-        DB.writeStats("steps", [new Date().toISOString(), deviceObject.mac, value]);
-      }
-
-      deviceView.steps = DB.readSumByDate("steps", deviceObject.mac, Helper.getToday());
-
       updateView();
     });
   }
@@ -297,7 +243,7 @@ Page {
     if(settings.syncAtPull) {
       python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
         if(result) {
-          syncData();
+          Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
         }
       });
     }

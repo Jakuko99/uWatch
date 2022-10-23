@@ -12,6 +12,7 @@ paired_devices = 'paired-devices'
 connect = 'connect'
 connected = 'info'
 disconnect = 'disconnect'
+connected_devices = "devices"
 pair = 'pair'
 remove = 'remove'
 agent = 'agent KeyboardOnly'
@@ -51,6 +52,10 @@ def device_connected(mac):
 
 def disconnect_device(mac):
     return [disconnect + " " + mac]
+
+
+def get_connected_devices():
+    return [connected_devices]
 
 
 def read(uuid):

@@ -119,6 +119,18 @@ def unpair(mac):
         else:
             return True
 
+def connected_devices():
+    if process != None:
+        send_expect(listener, ctl.get_connected_devices_filter())
+        listener.send_input(None, ctl.get_connected_devices(), True, 0)
+        time.sleep(1)
+
+        output = listener.get_output()
+
+        if len(output) > 0:
+            return output
+        else:
+            return ""
 
 def write_value_uuid(uuid, value):
     if process != None:
