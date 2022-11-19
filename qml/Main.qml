@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import Ubuntu.Components 1.3
+import Lomiri.Components 1.3
 //import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
@@ -33,7 +33,7 @@ MainView {
 
         // Theme settings
         readonly property string accentColor: "#c74375"
-        readonly property string cardColor: theme.name == "Ubuntu.Components.Themes.SuruDark" ? "#444444" : "#EAE9E7"
+        readonly property string cardColor: theme.name == "Lomiri.Components.Themes.SuruDark" ? "#444444" : "#EAE9E7"
         readonly property string subColor: "#666666"
 
         // Backend Settings

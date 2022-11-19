@@ -1,10 +1,10 @@
 import QtQuick 2.7
-import Ubuntu.Components 1.3
+import Lomiri.Components 1.3
 //import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
-import Ubuntu.Components.Pickers 1.0
+import Lomiri.Components.Pickers 1.0
 
 import "../Components"
 
@@ -244,7 +244,7 @@ Page {
 
           TextField {
             id: settingsAutoSyncIntervalTextField
-            
+
             anchors {
               top: settingsAutoSyncWarningLabel.bottom
               right: parent.right
