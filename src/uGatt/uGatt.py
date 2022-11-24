@@ -1,5 +1,6 @@
 from Backend import set_backend, get_backend_exec, start_backend, force_backend, start_listening, stop_listening, stop_interactive, send_expect
 import Backend.bluetoothctl as ctl
+import Backend.gatttool as ttt
 import shlex
 import os
 import time
@@ -43,9 +44,9 @@ def connect(mac):
         if listener != None:
             if(is_connected(mac) == False):
                 listener.log_verbose(verbose)
-                scan()
-                send_expect(listener, ctl.get_connection_success_filter())
-                listener.send_input(ctl.connect_device, mac, True, 0)
+                #scan()
+                send_expect(listener, ttt.get_connection_success_filter())
+                listener.send_input(ttt.connect_device, mac, True, 0)
 
                 time.sleep(2)
 
@@ -59,8 +60,8 @@ def connect(mac):
 
 def is_connected(mac):
     if process != None:
-        send_expect(listener, ctl.get_connected_filter())
-        listener.send_input(ctl.device_connected, mac, True, 0)
+        send_expect(listener, ttt.get_connected_filter())
+        listener.send_input(ttt.device_connected, mac, True, 0)
 
         time.sleep(1)
 
@@ -91,11 +92,21 @@ def disconnect(mac):
 
 def list_paired():
     if process != None:
-        send_expect(listener, ctl.get_paired_devices_filter())
-        listener.send_input(None, ctl.get_paired_devices(), True, 0)
-        time.sleep(0.5)
+        p = force_backend("bluetoothctl")
 
-        return listener.get_output()
+        time.sleep(1)
+        l = start_listening(p, True)
+        l.log_verbose(verbose)
+        send_expect(l, ctl.get_paired_devices_filter())
+        l.send_input(None, ctl.get_paired_devices(), True, 0)
+        time.sleep(1)
+        #l.send_input(None, ctl.quit_interactive(), True, 0)
+
+        #stop_listening(l)
+        #stop_interactive(process)
+
+
+        return l.get_output()
 
 
 def unpair(mac):
@@ -140,20 +151,28 @@ def write_value_uuid(uuid, value):
         time.sleep(3)
 
 
-def write_handle(handle, value):
+def write_value_handle(mac, handle, value):
     if process != None:
         if backend == "gatttool":
             if listener != None:
-                send_expect(listener, ctl.get_write_value_filter())
-                listener.send_input(ctl.write, [handle, value], True, 0)
+                if is_connected(mac) == False:
+                    connect(mac)
+                    time.sleep(1)
+
+                send_expect(listener, ttt.get_write_value_filter())
+                listener.send_input(ttt.write, [handle, value], True, 0)
 
                 time.sleep(3)
 
 
-def read_value(uuid):
+def read_value(mac, uuid):
     if process != None:
-        send_expect(listener, ctl.get_read_value_filter())
-        listener.send_input(ctl.read, uuid, True, 0)
+        if is_connected(mac) == False:
+            connect(mac)
+            time.sleep(1)
+
+        send_expect(listener, ttt.get_read_value_filter())
+        listener.send_input(ttt.read, uuid, True, 0)
 
         time.sleep(1.5)
 
@@ -170,9 +189,10 @@ def format_input(input):
 
     if len(input) > 1:
         for val in input:
-            if backend == 'gatttool':
-                retVal += '' + val
-            elif backend == 'bluetoothctl':
-                retVal += '0x' + val + ' '
+            #if backend == 'gatttool':
+            retVal += '' + val
+            #elif backend == 'bluetoothctl':
+                #retVal += '0x' + val + ' '
 
+    print(retVal)
     return retVal

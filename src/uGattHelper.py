@@ -31,7 +31,8 @@ def parseToInt(value, endian):
 
 
 def parseOutput(output, endian):
-    value = output[0].replace("\x1b[K ", "").split("    ")[0].strip()
+    print(output)
+    value = output[0].split("value: ")[1].strip()
 
     if endian == "little-endian":
         value = ''.join(reverseList(value.split(" ")))

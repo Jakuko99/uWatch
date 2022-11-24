@@ -52,7 +52,7 @@ function formatInput(input) {
 
   if(input.length > 1) {
     for (let i=0; i < input.length; i++) {
-      retVal += '0x' + input[i] + ' ';
+      retVal += '' + input[i];
     }
   }
 

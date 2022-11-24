@@ -153,15 +153,11 @@ Page {
   Component.onCompleted: {
     if(deviceObject.firmwareVersion == " ") {
       indeterminateBar.visible = true;
-      python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
-        if(connected) {
-          Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
-          delay(4000, function() {
-            indeterminateBar.visible = false;
-            deviceObject.firmwareVersion = DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
-            deviceViewHeader.title= deviceObject.firmware + ' ' + DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
-          })
-        }
+      Devices.getInitialDeviceData(deviceObject.id, deviceObject.mac, deviceObject.firmware);
+      delay(4000, function() {
+        indeterminateBar.visible = false;
+        deviceObject.firmwareVersion = DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
+        deviceViewHeader.title= deviceObject.firmware + ' ' + DB.readByMAC("watches", deviceObject.mac).rows.item(0).firmwareVersion;
       })
     }
 
@@ -170,18 +166,8 @@ Page {
 
   function startSync() {
     indeterminateBar.visible = true;
-    python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
-      if(result) {
-        Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
-      } else {
-        python.call('uwatch.connectDevice', [deviceObject.mac], function(connected) {
-          if(connected) {
-            Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
-          }
-        })
-      }
-      updateView();
-    });
+    Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
+    updateView();
   }
 
   function updateHeartRateView() {
@@ -241,11 +227,7 @@ Page {
     updateView();
 
     if(settings.syncAtPull) {
-      python.call('uwatch.getConnectionState', [deviceObject.mac], function(result) {
-        if(result) {
-          Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
-        }
-      });
+      Devices.syncDevice(deviceObject.id, deviceObject.mac, deviceObject.firmware, deviceObject.firmwareVersion, true);
     }
   }
 

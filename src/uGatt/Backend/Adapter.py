@@ -38,7 +38,8 @@ def set_backend():
         backend = "bluetoothctl"
         return load_bluetoothctl_backend()
     else:
-        return False
+        backend = "gatttool"
+        return load_gatttool_backend()
 
 
 
@@ -50,6 +51,16 @@ def load_bluetoothctl_backend():
     try:
         global get_backend
         from .bluetoothctl import get_backend
+        return True
+    except Exception as e:
+        print("Could not import backend:" + e)
+        return False
+
+
+def load_gatttool_backend():
+    try:
+        global get_backend
+        from .gatttool import get_backend
         return True
     except Exception as e:
         print("Could not import backend:" + e)

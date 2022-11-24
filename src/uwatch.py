@@ -94,16 +94,15 @@ def getConnectedDevices():
 
 def writeValue(mac, currentFirmwareVersion, validFirmwareVersion, identifier, value):
     if compareVersions(currentFirmwareVersion, validFirmwareVersion):
-        uGatt.write_value_uuid(identifier, value)
+        uGatt.write_value_handle(mac, identifier, value)
 
 
 def readValue(mac, currentFirmwareVersion, validFirmwareVersion, uuid, interpreter, type):
     if compareVersions(currentFirmwareVersion, validFirmwareVersion):
-        print(uGatt.read_value(uuid))
         if type == "int":
-            val = helper.parseToInt(uGatt.read_value(uuid), interpreter)
+            val = helper.parseToInt(uGatt.read_value(mac, uuid), interpreter)
         else:
-            val = helper.parseToString(uGatt.read_value(uuid), interpreter)
+            val = helper.parseToString(uGatt.read_value(mac, uuid), interpreter)
         return val
 
 

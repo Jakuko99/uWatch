@@ -70,7 +70,19 @@ function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
   let heartrateObject = GATT.getUUIDObject(gattobject, "Heart Rate Measurement");
   let stepsObject = GATT.getUUIDObject(gattobject, "Step count");
 
-  python.call('uwatch.writeValue', [mac, firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.UUID, GATT.formatInput(Helper.currentTimeToHex())], function() {})
+  let timeSynced = false
+  let firmwareSynced = false
+  let batterySynced = false
+  let heartrateSynced = false
+  let stepsSynced = false
+
+  python.call('uwatch.writeValue', [mac, firmwareVersion, firmwareObject.ValidSinceFirmware, timeObject.Handle, GATT.formatInput(Helper.currentTimeToHex())], function() {
+    timeSynced = true
+
+    if(firmwareSynced == true && batterySynced == true && heartrateSynced == true && stepsSynced == true) {
+      indeterminateBar.visible = false
+    }
+  })
   python.call('uwatch.readValue', [mac,
    firmwareVersion,
    firmwareObject.ValidSinceFirmware,
@@ -82,6 +94,12 @@ function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
        if(updateUI) {
          deviceObject.id = result;
          deviceView.updateView();
+
+         firmwareSynced = true
+
+         if(timeSynced == true && batterySynced == true && heartrateSynced == true && stepsSynced == true) {
+           indeterminateBar.visible = false
+         }
        }
      }
   });
@@ -95,6 +113,12 @@ function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
      if(updateUI) {
        deviceView.battery = result;
        deviceView.updateView();
+
+       batterySynced = true
+
+       if(timeSynced == true && firmwareSynced == true && heartrateSynced == true && stepsSynced == true) {
+         indeterminateBar.visible = false
+       }
      }
   });
 
@@ -106,6 +130,12 @@ function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
         deviceView.heartrate = result;
 
         deviceView.updateView();
+
+        heartrateSynced = true
+
+        if(timeSynced == true && firmwareSynced == true && batterySynced == true && stepsSynced == true) {
+          indeterminateBar.visible = false
+        }
       }
     }
   });
@@ -120,6 +150,12 @@ function syncDevice(id, mac, firmware, firmwareVersion, updateUI) {
     if(updateUI) {
       deviceView.steps = DB.readSumByDate("steps", mac, Helper.getToday());
       deviceView.updateView();
+
+      stepsSynced = true
+
+      if(timeSynced == true && firmwareSynced == true && batterySynced == true && heartrateSynced == true) {
+        indeterminateBar.visible = false
+      }
     }
   });
 }
