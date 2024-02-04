@@ -1,5 +1,7 @@
 # uWatch
 
+Forked from [uWatch](https://gitlab.com/jiiho1/uwatch) by [Jiiho](https://gitlab.com/jiiho1) on GitLab.
+
 Smartwatch Sync App for Ubuntu Touch
 
 # Heads up
